@@ -32,7 +32,7 @@ export const HamburgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="static">
+    <div className="absolute left-3 top-6">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild onClick={() => setIsOpen(true)}>
           <Button
