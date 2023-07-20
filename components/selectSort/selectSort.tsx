@@ -1,29 +1,65 @@
-'use client';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Button } from '../ui/button';
+import { CommandGroup, CommandItem, Command } from '@/components/ui/command';
+import { Check, ChevronsUpDown } from 'lucide-react';
 
 import clsx from 'clsx';
-import {
-  Select,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-} from '../ui/select';
 
 type Props = {
-  className?: string;
+  value: string;
+  setValue: Dispatch<SetStateAction<string>>;
 };
 
-export const SelectSort = (props: Props) => {
+const SORTING_TYPE = [
+  { value: 'titledesc', label: 'Name Descending' },
+  { value: 'titleasc', label: 'Name Ascending' },
+  { value: 'datedesc', label: 'Date Descending' },
+  { value: 'dateasc', label: 'Date Ascending' },
+];
+
+export const SelectSort = ({ value, setValue }: Props) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Select>
-      <SelectTrigger className={clsx(props.className, 'w-40 bg-background')}>
-        <SelectValue placeholder="Sort By" />
-      </SelectTrigger>
-      <SelectContent position="item-aligned">
-        <SelectItem value="penis">penis</SelectItem>
-        <SelectItem value="penis2">penis</SelectItem>
-        <SelectItem value="penis3">penis</SelectItem>
-      </SelectContent>
-    </Select>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          className="w-[200px] justify-between"
+          aria-expanded={open}
+        >
+          {value
+            ? SORTING_TYPE.find((type) => type.value === value)?.label
+            : 'Sort by:'}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0">
+        <Command>
+          <CommandGroup>
+            {SORTING_TYPE.map((type) => (
+              <CommandItem
+                key={type.value}
+                onSelect={(currentValue) => {
+                  setValue(currentValue === value ? '' : currentValue);
+                  setOpen(false);
+                  console.log(currentValue, value);
+                }}
+              >
+                <Check
+                  className={clsx(
+                    'mr-2 h-4 w-4',
+                    value === type.value ? 'opacity-100' : 'opacity-0'
+                  )}
+                />
+                {type.value}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 };

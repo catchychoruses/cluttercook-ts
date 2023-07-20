@@ -2,20 +2,19 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import Image from 'next/image';
+import placeholder from '../../public/placeholder.jpeg';
+import { buttonVariants } from '../ui/button';
+import clsx from 'clsx';
+import Link from 'next/link';
 
 interface CardProps extends React.ComponentProps<typeof Card> {
   title: string;
+  id: string;
 }
 
-import placeholder from '../../public/fslur.jpg';
-import { Button, buttonVariants } from '../ui/button';
-import clsx from 'clsx';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-
-export const RecipeCard = ({ className, title, ...props }: CardProps) => {
+export const RecipeCard = ({ className, id, title, ...props }: CardProps) => {
   return (
-    <Card className="m-4 w-60" {...props}>
+    <Card className={clsx('m-4 w-60', className)} {...props}>
       <Image
         className="overflow-clip"
         src={placeholder}
@@ -28,7 +27,10 @@ export const RecipeCard = ({ className, title, ...props }: CardProps) => {
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4">
-        <Link href={`/recipe-page/${title}`} className={clsx(buttonVariants())}>
+        <Link
+          href={`/recipe-page/${encodeURIComponent(id)}`}
+          className={clsx(buttonVariants())}
+        >
           View Recipe
         </Link>
       </CardContent>

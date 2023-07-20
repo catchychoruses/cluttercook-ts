@@ -1,7 +1,8 @@
+import Browser from '@/components/browser/browser';
 import { PageWrapper } from '@/components/page-wrapper';
-import { Browser } from '../components/browser/browser';
+import prisma from '@/lib/prisma';
 
-export default function Home() {
+export default async function Home() {
   return (
     <main className="flex flex-col items-center justify-between">
       <PageWrapper>

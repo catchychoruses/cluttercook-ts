@@ -1,22 +1,24 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
+import { ReactNode } from 'react';
 
-export const PageWrapper = ({
+export const Wrapper = ({
   children,
   className,
 }: {
   children: ReactNode;
   className?: string;
 }) => {
+  const pathname = usePathname();
   return (
-    <AnimatePresence mode={'popLayout'}>
+    <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20 }}
+        key={pathname}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 20 }}
         className={className}
       >
         {children}

@@ -7,6 +7,8 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/navbar/navbar';
+import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
 
 const workSans = Work_Sans({ subsets: ['latin'] });
 
@@ -21,11 +23,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={clsx(workSans.className, 'container')}>
-        <HamburgerMenu />
-        <Navbar />
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <HamburgerMenu />
+          <Navbar />
+          {children}
+        </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );

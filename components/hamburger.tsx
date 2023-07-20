@@ -46,15 +46,15 @@ export const HamburgerMenu = () => {
           <div className="mt-4 max-w-[80%]">
             {[
               { link: '/', display: 'Browse Recipes' },
-              { link: '/new-recipe', display: 'New Recipe' },
+              { link: '/scrape', display: 'New Recipe' },
               { link: '/import-recipe', display: 'Import Recipe' },
             ].map(({ link, display }) => (
-              <>
+              <div key={link}>
                 <div onClick={() => setIsOpen(false)}>
                   <Link href={link}>{display}</Link>
                 </div>
                 <Separator className="my-4" />
-              </>
+              </div>
             ))}
           </div>
         </SheetContent>
