@@ -1,13 +1,18 @@
 import Browser from '@/components/browser/browser';
-import { PageWrapper } from '@/components/page-wrapper';
-import prisma from '@/lib/prisma';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import { authOptions } from './api/auth/[...nextauth]/route';
 
 export default async function Home() {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect('/api/auth/signin');
+  }
+
   return (
-    <main className="flex flex-col items-center justify-between">
-      <PageWrapper>
-        <Browser />
-      </PageWrapper>
+    <main className="container flex h-[90vh] flex-col items-center p-16 align-middle">
+      <Browser />
     </main>
   );
 }

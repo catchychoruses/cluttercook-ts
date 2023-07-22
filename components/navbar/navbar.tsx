@@ -7,12 +7,18 @@ import { buttonVariants } from '../ui/button';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './theme-toggle';
 import { Settings } from 'lucide-react';
-
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import { TooltipProvider } from '@radix-ui/react-tooltip';
+import { SettingsButton } from './settings-button';
 const Navbar = () => {
   const currentPath = usePathname();
 
   return (
-    <nav className=" container my-4 mt-10 flex max-w-[80vw] gap-4 max-md:hidden">
+    <nav
+      className={clsx('mt-10 flex gap-4 max-md:hidden', {
+        ['hidden']: currentPath === '/auth',
+      })}
+    >
       {[
         { path: '/', display: 'Browse Recipes' },
         { path: '/scrape', display: 'New Recipe' },
@@ -33,9 +39,7 @@ const Navbar = () => {
       ))}
       <div className="ml-auto flex gap-4">
         <ThemeToggle />
-        <Link href={'/settings'} className={clsx(buttonVariants())}>
-          <Settings />
-        </Link>
+        <SettingsButton />
       </div>
     </nav>
   );

@@ -23,7 +23,7 @@ export const Scraper = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      url: 'http://adultbar.com.au/cocktails/How-To-Make-A/Cum-Shot',
+      url: 'https://based.cooking/tofu-and-cashew-chow-mein/',
     },
   });
 
@@ -49,7 +49,7 @@ export const Scraper = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Scrape deez nuts</Button>
+        <Button type="submit">Scrape recipe</Button>
       </form>
     </Form>
   );

@@ -1,14 +1,24 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.recipe.create({
+  await prisma.user.create({
     data: {
-      title: 'Example Recipe 2',
-      description: 'heee hooo',
-      ingredients: 'heee hoooo',
-      instructions: 'pooo',
+      username: 'catchychoruses',
+      recipes: {
+        create: [
+          {
+            title: 'Example Recipe 2',
+            description: 'heee hooo',
+            ingredients: 'heee hoooo',
+            instructions: 'pooo',
+          },
+        ],
+      },
+    },
+    include: {
+      recipes: true,
     },
   });
 }

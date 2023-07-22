@@ -11,6 +11,8 @@ import {
 } from './ui/sheet';
 import { Separator } from './ui/separator';
 import { useState } from 'react';
+import clsx from 'clsx';
+import { usePathname } from 'next/navigation';
 
 const HamburgerIcon = () => (
   <div className="p-1/2">
@@ -30,9 +32,14 @@ const HamburgerIcon = () => (
 
 export const HamburgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const currentPath = usePathname();
 
   return (
-    <div className="absolute left-3 top-6">
+    <div
+      className={clsx('absolute left-1.5 ', {
+        ['hidden']: currentPath === '/auth',
+      })}
+    >
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild onClick={() => setIsOpen(true)}>
           <Button
