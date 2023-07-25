@@ -9,8 +9,6 @@ export const Search = ({ query, setTopQuery }: SearchInputProps) => {
   const handleChange = useCallback(
     (input: string) => {
       setTopQuery(input);
-
-      console.log(input);
     },
     [setTopQuery]
   );

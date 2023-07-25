@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { Repipe } from './types';
+import { Recipe } from './types';
+import { uploadImage } from '@/lib/cloudinary';
+import { UploadApiResponse } from 'cloudinary';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -13,21 +15,31 @@ export async function GET(req: Request) {
   });
 
   try {
-    const res: Repipe = await fetch(
+    const res: Recipe = await fetch(
       `https://api.spoonacular.com/recipes/extract?${params}`,
       {
         method: 'GET',
       }
     ).then((res) => res.json());
 
-    const data: { title: string; ingredients: string; instructions: string } = {
+    const scrapedImg = await uploadImage(res.image, { overwrite: true });
+
+    const data: {
+      title: string;
+      ingredients: string;
+      instructions: string;
+      image: UploadApiResponse | null;
+    } = {
       title: res.title,
       ingredients:
         res.extendedIngredients
           ?.map((ingredient: any) => `${ingredient.original}`)
-          .join(', ') ?? 'peepee',
+          .join(', ') ?? '',
       instructions: res.instructions,
+      image: scrapedImg || null,
     };
     return NextResponse.json(data);
-  } catch (err) {}
+  } catch (err) {
+    return NextResponse.json(err);
+  }
 }

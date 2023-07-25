@@ -7,11 +7,29 @@ import { useState } from 'react';
 import { Search } from './search';
 import useSWR, { Fetcher } from 'swr';
 import { useDebounce } from 'use-debounce';
+import { Skeleton } from '../ui/skeleton';
+import { motion } from 'framer-motion';
 
 const fetcher: Fetcher<
-  { id: string; title: string; description: string }[],
+  {
+    id: string;
+    title: string;
+    description: string;
+    picture: { publicId: string; format: string }[];
+  }[],
   string
 > = (url) => fetch(url).then((res) => res.json());
+
+export const BrowserSkeleton = () => {
+  const skeleton = new Array(4).map((key) => (
+    <motion.div key={key} className="mb-2 mt-4 flex  gap-4 rounded-md">
+      <Skeleton className=" h-44 w-44 rounded-md" />
+      <Skeleton className="w-[90%] rounded-md" />
+    </motion.div>
+  ));
+
+  return skeleton;
+};
 
 export default function Browser() {
   const [query, setQuery] = useState<string | null>(null);
@@ -25,10 +43,8 @@ export default function Browser() {
           sortingType === '' ? 'datedesc' : sortingType
         }`
       : `/api/recipes?sort=${sortingType === '' ? 'datedesc' : sortingType}`,
-    fetcher,
-    { refreshInterval: 1000 }
+    fetcher
   );
-  console.log(data);
 
   return (
     <div className="mt-2 w-[90vw]">
@@ -39,18 +55,21 @@ export default function Browser() {
       <div className="rounded-md border">
         <ScrollArea className="h-[70vh] rounded-md  p-4 md:h-[80vh]">
           <div className="grid grid-flow-row grid-cols-1">
-            {isLoading
-              ? ' wait...'
-              : error
-              ? 'Something went wrong : ('
-              : data?.map((recipe) => (
-                  <RecipeCard
-                    key={recipe.id}
-                    id={recipe.id}
-                    title={recipe.title}
-                    description={recipe.description}
-                  ></RecipeCard>
-                ))}
+            {isLoading ? (
+              <BrowserSkeleton />
+            ) : error ? (
+              'Something went wrong : ('
+            ) : (
+              data?.map((recipe) => (
+                <RecipeCard
+                  key={recipe.id}
+                  id={recipe.id}
+                  title={recipe.title}
+                  description={recipe.description}
+                  picture={`${recipe.picture[0].publicId}.${recipe.picture[0].format}`}
+                ></RecipeCard>
+              ))
+            )}
           </div>
         </ScrollArea>
       </div>

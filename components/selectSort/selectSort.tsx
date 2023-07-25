@@ -45,7 +45,6 @@ export const SelectSort = ({ value, setValue }: Props) => {
                 onSelect={(currentValue) => {
                   setValue(currentValue === value ? '' : currentValue);
                   setOpen(false);
-                  console.log(currentValue, value);
                 }}
               >
                 <Check

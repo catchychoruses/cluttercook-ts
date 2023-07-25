@@ -1,4 +1,4 @@
-export interface Repipe {
+export interface Recipe {
   vegetarian: boolean;
   vegan: boolean;
   glutenFree: boolean;

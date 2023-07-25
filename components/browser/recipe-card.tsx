@@ -1,30 +1,40 @@
 'use client';
 
 import Image from 'next/image';
-import placeholder from '../../public/placeholder.jpeg';
 import { buttonVariants } from '../ui/button';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { Card } from '../ui/card';
+import { motion } from 'framer-motion';
 
 interface CardProps {
   title: string;
   id: string;
   description: string;
+  picture: string;
 }
 
-export const RecipeCard = ({ id, title, description, ...props }: CardProps) => {
+export const RecipeCard = ({
+  id,
+  title,
+  description,
+  picture,
+  ...props
+}: CardProps) => {
   return (
-    <div
+    <motion.div
       className={clsx('m-4 flex w-[95%] gap-8 rounded-md border')}
       {...props}
     >
-      <Image
-        className="rounded-md"
-        src={placeholder}
-        width={200}
-        alt="peecture"
-      />
+      <div className="relative min-h-[15rem]  min-w-[15rem]">
+        <Image
+          className="rounded-md"
+          src={`https://res.cloudinary.com/ddfxnnmki/image/upload/v1690192883/${picture}`}
+          objectFit="cover"
+          layout="fill"
+          alt="picture"
+        />
+      </div>
+
       <div className="flex flex-col gap-8 p-4">
         <h1 className="text-[2rem] font-semibold ">{title}</h1>
         <p className=" line-clamp-2">{description}</p>
@@ -35,6 +45,6 @@ export const RecipeCard = ({ id, title, description, ...props }: CardProps) => {
           View Recipe
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 };

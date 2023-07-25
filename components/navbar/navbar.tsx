@@ -6,9 +6,7 @@ import React from 'react';
 import { buttonVariants } from '../ui/button';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './theme-toggle';
-import { Settings } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
-import { TooltipProvider } from '@radix-ui/react-tooltip';
+import { Croissant, Import, PlusCircle } from 'lucide-react';
 import { SettingsButton } from './settings-button';
 const Navbar = () => {
   const currentPath = usePathname();
@@ -20,21 +18,41 @@ const Navbar = () => {
       })}
     >
       {[
-        { path: '/', display: 'Browse Recipes' },
-        { path: '/scrape', display: 'New Recipe' },
-        { path: '/import-recipe', display: 'Import Recipe' },
-      ].map(({ path, display }) => (
+        {
+          path: '/',
+          statePaths: ['/'],
+          display: 'Browse',
+          icon: <Croissant className="mx-2" />,
+        },
+        {
+          path: '/scrape',
+          statePaths: ['/scrape', '/compose'],
+
+          display: 'New Recipe',
+          icon: <PlusCircle className="mx-2" />,
+        },
+        {
+          path: '/import',
+          statePaths: ['import'],
+
+          display: 'Import Recipe',
+          icon: <Import className="mx-2" />,
+        },
+      ].map(({ path, statePaths, display, icon }) => (
         <Link
           key={path}
           className={clsx(
             buttonVariants({
-              variant: path === currentPath ? 'default' : 'outline',
+              variant: statePaths.find((path) => path === currentPath)
+                ? 'default'
+                : 'outline',
+              size: 'sm',
             }),
-            'text-lg font-semibold'
+            'w-40 pl-0 text-lg font-semibold'
           )}
           href={path}
         >
-          <span>{display}</span>
+          {icon || ''} <span>{display}</span>
         </Link>
       ))}
       <div className="ml-auto flex gap-4">

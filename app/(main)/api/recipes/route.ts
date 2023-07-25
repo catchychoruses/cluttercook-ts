@@ -45,6 +45,12 @@ export async function GET(req: Request) {
           id: true,
           title: true,
           description: true,
+          picture: {
+            select: {
+              publicId: true,
+              format: true,
+            },
+          },
         },
         orderBy: sortingType,
       },

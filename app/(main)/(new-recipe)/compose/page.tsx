@@ -3,7 +3,7 @@ import { Composer } from './composer';
 import { Wrapper } from '../wrapper';
 
 type Params = {
-  searchParams: { url: string };
+  searchParams: { url: string | undefined };
 };
 
 export default function Page({ searchParams }: Params) {

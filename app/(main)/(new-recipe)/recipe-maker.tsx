@@ -8,7 +8,6 @@ import React from 'react';
 
 export const RecipeMaker = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
-  console.log(pathname);
   return (
     <div className="container mt-10 ">
       <div className="ml-6">
@@ -16,8 +15,10 @@ export const RecipeMaker = ({ children }: { children: React.ReactNode }) => {
           href={'/scrape'}
           className={clsx(
             buttonVariants({ variant: 'outline' }),
-            'relative top-[0.0625rem] rounded-b-none border-b-0',
-            pathname !== '/scrape' ? ' border-r-0 bg-gray-200' : false
+            'relative top-[0.0625rem] w-24 rounded-b-none border-b-0',
+            pathname !== '/scrape'
+              ? ' border-r-0 bg-secondary'
+              : 'hover:bg-transparent'
           )}
         >
           Scrape
@@ -26,8 +27,10 @@ export const RecipeMaker = ({ children }: { children: React.ReactNode }) => {
           href={'/compose'}
           className={clsx(
             buttonVariants({ variant: 'outline' }),
-            'relative top-[0.0625rem] rounded-b-none border-b-0',
-            pathname !== '/compose' ? 'red border-l-0 bg-gray-200' : false
+            'relative top-[0.0625rem] w-24 rounded-b-none border-b-0',
+            pathname !== '/compose'
+              ? ' border-l-0 bg-secondary'
+              : 'hover:bg-transparent'
           )}
         >
           Compose

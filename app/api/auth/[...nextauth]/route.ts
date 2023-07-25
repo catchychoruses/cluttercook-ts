@@ -1,4 +1,3 @@
-// pages/api/auth/[...nextauth].js
 import prisma from '@/lib/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import NextAuth from 'next-auth';
