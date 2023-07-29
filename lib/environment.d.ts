@@ -10,6 +10,7 @@ declare global {
       DATABASE_URL: string;
       NEXTAUTH_SECRET: string;
       NEXTAUTH_URL: string;
+      BASE_URL: string;
       ENV: 'test' | 'dev' | 'prod';
     }
   }

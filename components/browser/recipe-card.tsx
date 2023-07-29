@@ -1,10 +1,19 @@
 'use client';
 
 import Image from 'next/image';
-import { buttonVariants } from '../ui/button';
+import { Button, buttonVariants } from '../ui/button';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+
+import { MoreHorizontal } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import { useRouter } from 'next/navigation';
 
 interface CardProps {
   title: string;
@@ -20,6 +29,18 @@ export const RecipeCard = ({
   picture,
   ...props
 }: CardProps) => {
+  const router = useRouter();
+
+  const handleDelete = async () => {
+    const deleteRes = await fetch(`/api/delete-recipe?recipeId=${id}`, {
+      method: 'DELETE',
+    });
+
+    if (deleteRes) {
+      router.refresh();
+    }
+  };
+
   return (
     <motion.div
       className={clsx('m-4 flex w-[95%] gap-8 rounded-md border')}
@@ -28,7 +49,7 @@ export const RecipeCard = ({
       <div className="relative min-h-[15rem]  min-w-[15rem]">
         <Image
           className="rounded-md"
-          src={`https://res.cloudinary.com/ddfxnnmki/image/upload/v1690192883/${picture}`}
+          src={picture}
           objectFit="cover"
           layout="fill"
           alt="picture"
@@ -44,6 +65,23 @@ export const RecipeCard = ({
         >
           View Recipe
         </Link>
+      </div>
+      <div className="m-4 ml-auto">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon">
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={handleDelete}
+            >
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </motion.div>
   );

@@ -22,11 +22,11 @@ const Navbar = () => {
           path: '/',
           statePaths: ['/'],
           display: 'Browse',
-          icon: <Croissant className="mx-2" />,
+          icon: <Croissant className="mx-2 transition-all hover:rotate-90" />,
         },
         {
           path: '/scrape',
-          statePaths: ['/scrape', '/compose'],
+          statePaths: ['/scrape', '/create'],
 
           display: 'New Recipe',
           icon: <PlusCircle className="mx-2" />,

@@ -1,6 +1,6 @@
-import React, { use } from 'react';
-import { Composer } from './composer';
+import React from 'react';
 import { Wrapper } from '../wrapper';
+import Create from './create';
 
 type Params = {
   searchParams: { url: string | undefined };
@@ -9,7 +9,7 @@ type Params = {
 export default function Page({ searchParams }: Params) {
   return (
     <Wrapper>
-      <Composer url={searchParams.url} />
+      <Create url={searchParams.url || null} />
     </Wrapper>
   );
 }

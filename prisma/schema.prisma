@@ -27,7 +27,7 @@ model Account {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId], name: "provider_providerAccountId")
 }
 
 model Session {
@@ -44,6 +44,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  hashedPassword  String?
   accounts      Account[]
   sessions      Session[]
   recipes        Recipe[]
@@ -66,14 +67,13 @@ model Recipe {
   description  String
   ingredients  String
   instructions String
-  picture        Picture[]
+  picture        Picture?
 }
 
 model Picture {
   id          String @default(cuid()) @id
   recipe      Recipe @relation(fields: [recipeId], references: [id])
-  recipeId    String
-  publicId    String @unique 
-  format      String
-  version     String
+  recipeId    String @unique
+  publicId    String?
+  url         String 
 }

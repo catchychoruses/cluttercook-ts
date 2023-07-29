@@ -15,7 +15,7 @@ export default function Page() {
 
   return (
     <div className=" m-auto flex w-1/3 flex-col items-center gap-4 p-4">
-      <p>{session.data?.user?.name}</p>
+      <p>{session.data?.user?.name}</p> <p>{session.data?.user?.email}</p>
       <Button
         onClick={() => {
           signOut();

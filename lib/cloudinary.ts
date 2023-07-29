@@ -1,14 +1,5 @@
 import * as cloudinary from 'cloudinary';
 
-export interface CloudinarySearchResponse {
-  total_count: number;
-  time: number;
-  resources: Resource[];
-  rate_limit_allowed: number;
-  rate_limit_reset_at: Date;
-  rate_limit_remaining: number;
-}
-
 export interface Resource {
   asset_id: string;
   public_id: string;
@@ -42,7 +33,12 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export function uploadImage(imageUploaded: string, options?: {}) {
+export function uploadImage(
+  imageUploaded: string,
+  options?: cloudinary.UploadApiOptions
+) {
+  console.log(imageUploaded, options);
+
   const res = new Promise<cloudinary.UploadApiResponse | undefined>(
     (resolve, reject) => {
       cloudinary.v2.uploader.upload(
@@ -55,6 +51,19 @@ export function uploadImage(imageUploaded: string, options?: {}) {
       );
     }
   );
+
+  return res;
+}
+
+export function deleteImage(publicId: string | null) {
+  const res = new Promise<cloudinary.UploadApiResponse>((resolve, reject) => {
+    if (publicId) {
+      cloudinary.v2.uploader.destroy(publicId, (err, res) => {
+        if (err) reject(err);
+        resolve(res);
+      });
+    }
+  });
 
   return res;
 }

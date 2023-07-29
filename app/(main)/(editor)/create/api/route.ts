@@ -10,27 +10,29 @@ type Recipe = {
   description: string;
   ingredients: string;
   instructions: string;
-  picture: string;
+  picture: { base64Picture: string; scrapedUrl?: string; publicId?: string };
 };
 
 export async function POST(req: NextRequest) {
   const recipeRes: Recipe = await req.json();
 
+  console.log(recipeRes);
+
   const imageRes: UploadApiResponse | undefined = await fetch(
     'http://localhost:3000/api/upload-image',
     {
       method: 'POST',
-      body: JSON.stringify(recipeRes.picture),
-      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ base64Picture: recipeRes.picture.base64Picture }),
+      headers: { 'Content-type': 'application/json' },
     }
   ).then((data) => data.json());
 
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   const sessionData = await prisma.session.findFirst({
     where: {
       user: {
-        name: session?.user?.name,
+        email: session?.user?.email,
       },
     },
   });
@@ -45,13 +47,10 @@ export async function POST(req: NextRequest) {
               {
                 ...recipeRes,
                 picture: {
-                  create: [
-                    {
-                      publicId: imageRes.public_id,
-                      format: imageRes.format,
-                      version: `${imageRes.version}`,
-                    },
-                  ],
+                  create: {
+                    url: imageRes.secure_url,
+                    publicId: imageRes.public_id,
+                  },
                 },
               },
             ],
@@ -59,9 +58,15 @@ export async function POST(req: NextRequest) {
         },
       });
 
+      const deleteScrapedPiture = await fetch(
+        `http://localhost:3000/api/upload-image?publicId=${recipeRes.picture.publicId}`,
+        { method: 'DELETE' }
+      );
+      console.log(deleteScrapedPiture);
       return NextResponse.json(update);
     }
-  } catch {
+  } catch (err) {
+    console.log(err);
     return NextResponse.error();
   }
 }

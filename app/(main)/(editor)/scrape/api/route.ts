@@ -28,7 +28,10 @@ export async function GET(req: Request) {
       title: string;
       ingredients: string;
       instructions: string;
-      image: UploadApiResponse | null;
+      picture: {
+        url: string | null;
+        scrapedPublicId: string | undefined;
+      };
     } = {
       title: res.title,
       ingredients:
@@ -36,8 +39,12 @@ export async function GET(req: Request) {
           ?.map((ingredient: any) => `${ingredient.original}`)
           .join(', ') ?? '',
       instructions: res.instructions,
-      image: scrapedImg || null,
+      picture: {
+        url: scrapedImg?.secure_url || null,
+        scrapedPublicId: scrapedImg?.public_id,
+      },
     };
+
     return NextResponse.json(data);
   } catch (err) {
     return NextResponse.json(err);

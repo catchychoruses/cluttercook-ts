@@ -29,10 +29,11 @@ export async function GET(req: Request) {
 
   const session = await getServerSession(authOptions);
 
+  console.log(session);
   const sessionData = await prisma.session.findFirst({
     where: {
       user: {
-        name: session?.user?.name,
+        email: session?.user?.email,
       },
     },
   });
@@ -47,8 +48,7 @@ export async function GET(req: Request) {
           description: true,
           picture: {
             select: {
-              publicId: true,
-              format: true,
+              url: true,
             },
           },
         },

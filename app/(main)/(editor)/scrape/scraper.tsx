@@ -28,7 +28,7 @@ export const Scraper = () => {
   });
 
   const onSubmit: SubmitHandler<{ url: string }> = (data) => {
-    router.push(`/compose?url=${encodeURIComponent(data.url)}`);
+    router.push(`/create?url=${encodeURIComponent(data.url)}`);
   };
 
   return (

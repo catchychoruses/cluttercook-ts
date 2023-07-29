@@ -15,7 +15,7 @@ const fetcher: Fetcher<
     id: string;
     title: string;
     description: string;
-    picture: { publicId: string; format: string }[];
+    picture: { url: string };
   }[],
   string
 > = (url) => fetch(url).then((res) => res.json());
@@ -66,7 +66,7 @@ export default function Browser() {
                   id={recipe.id}
                   title={recipe.title}
                   description={recipe.description}
-                  picture={`${recipe.picture[0].publicId}.${recipe.picture[0].format}`}
+                  picture={recipe.picture.url}
                 ></RecipeCard>
               ))
             )}

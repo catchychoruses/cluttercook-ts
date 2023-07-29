@@ -1,5 +1,3 @@
-'use client';
-
 import {
   Form,
   FormControl,
@@ -9,72 +7,58 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Controller, useForm } from 'react-hook-form';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { ChangeEvent, useEffect, useState } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useSWR, { Fetcher } from 'swr';
-import placeholder from '../../../../public/placeholder.jpeg';
-import { Button, buttonVariants } from '@/components/ui/button';
-import clsx from 'clsx';
-import Link from 'next/link';
+import placeholder from '../../../public/placeholder.jpeg';
+import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
-import Image from 'next/image';
-import { prev } from 'cheerio/lib/api/traversing';
-import { Base64 } from 'js-base64';
 import { toBase64 } from '@/lib/utils';
-import { RESPONSE_LIMIT_DEFAULT } from 'next/dist/server/api-utils';
-import RenderResult from 'next/dist/server/render-result';
-import { UploadApiResponse } from 'cloudinary';
-
-const MAX_FILE_SIZE = 500000;
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp',
-];
 
 const formSchema = z.object({
   title: z.string(),
   description: z.string(),
   ingredients: z.string(),
   instructions: z.string(),
-  picture: z.undefined(),
 });
 
-const fetcher: Fetcher<
-  {
+type ComposerProps = {
+  recipeId?: string | null;
+  initialFormData: {
     title: string;
+    description?: string;
     ingredients: string;
     instructions: string;
-    image: UploadApiResponse | null;
-  },
-  string
-> = (url) => fetch(url).then((res) => res.json());
+    picture: {
+      url?: string | null;
+      publicId?: string;
+    };
+  } | null;
+  isLoading: boolean;
+  isEditMode?: boolean;
+};
 
-export const Composer = ({ url }: { url: string | undefined }) => {
+export const Composer = ({
+  initialFormData,
+  isLoading,
+  isEditMode = false,
+  recipeId,
+}: ComposerProps) => {
   const { toast } = useToast();
   const router = useRouter();
-  const [previewImage, setPreviewImage] = useState(placeholder.src);
-
-  let query;
-  if (url) {
-    query = new URLSearchParams({ url: url });
-  }
-  const { data, isLoading } = useSWR(
-    query !== undefined ? `/compose/api/scrape?${query}` : null,
-    fetcher
+  const [previewImage, setPreviewImage] = useState(
+    initialFormData?.picture?.url || placeholder.src
   );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: data?.title || '',
-      description: '',
-      ingredients: data?.ingredients || '',
-      instructions: data?.instructions || '',
+      title: initialFormData?.title || '',
+      description: initialFormData?.description || '',
+      ingredients: initialFormData?.ingredients || '',
+      instructions: initialFormData?.instructions || '',
     },
   });
 
@@ -91,12 +75,21 @@ export const Composer = ({ url }: { url: string | undefined }) => {
 
   const onSubmit = async () => {
     try {
-      const createRes = await fetch('/compose/api/create', {
-        body: JSON.stringify({ ...form.getValues(), picture: previewImage }),
+      await fetch(isEditMode ? 'edit/api' : '/create/api', {
+        body: JSON.stringify({
+          ...form.getValues(),
+          recipeId: recipeId,
+          picture: {
+            base64Picture: previewImage,
+            scrapedUrl: initialFormData?.picture?.url,
+            publicId: initialFormData?.picture?.publicId,
+          },
+        }),
         method: 'POST',
+        headers: { 'Content-type': 'application/json' },
       }).then((res) => res.json());
 
-      toast({ description: 'Recipe created succesfully' });
+      toast({ description: 'Recipe saved' });
       router.push(`/`);
     } catch (err) {
       toast({ description: `Something went wrong... ${err}` });
@@ -105,21 +98,17 @@ export const Composer = ({ url }: { url: string | undefined }) => {
 
   // blame: Thomas Aspen
   useEffect(() => {
-    if (!isLoading && data != null) {
-      form.setValue('title', data.title);
-      form.setValue('description', '');
-      form.setValue('ingredients', data.ingredients);
-      form.setValue('instructions', data.instructions);
-
-      if (data?.image) {
-        setPreviewImage(data.image.secure_url);
+    if (!isLoading && initialFormData != null) {
+      form.setValue('title', initialFormData.title);
+      form.setValue('description', initialFormData.description || '');
+      form.setValue('ingredients', initialFormData.ingredients);
+      form.setValue('instructions', initialFormData.instructions);
+      if (initialFormData.picture?.url) {
+        setPreviewImage(initialFormData.picture.url);
       }
+      console.log(initialFormData, previewImage);
     }
-  }, [isLoading, data, form]);
-
-  const handlePreview = useCallback(() => {
-    router.push('/preview');
-  }, [router]);
+  }, [isLoading, initialFormData, form]);
 
   return isLoading ? (
     <p>wait...</p>
@@ -185,44 +174,24 @@ export const Composer = ({ url }: { url: string | undefined }) => {
           )}
         />
 
-        <Controller
-          control={form.control}
-          name="picture"
-          render={({ field }) => (
-            <FormItem>
-              <div className=" mx-auto flex w-full flex-col items-center p-4">
-                {/* eslint-disable */}
+        <FormItem>
+          <div className=" mx-auto flex w-full flex-col items-center p-4">
+            <img
+              className="m-4 w-52 rounded"
+              src={previewImage}
+              alt="placeholder"
+            />
+            <FormControl>
+              <Input
+                className="w-fit"
+                type="file"
+                onChange={handleImageInput}
+              />
+            </FormControl>
+          </div>
+        </FormItem>
 
-                <img
-                  className="m-4 w-52 rounded"
-                  src={previewImage}
-                  alt="placeholder"
-                />
-                <FormControl>
-                  <Input
-                    className="w-fit"
-                    type="file"
-                    {...field}
-                    onChange={handleImageInput}
-                  />
-                </FormControl>
-              </div>
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit">Create Recipe</Button>
-
-        <Link
-          href="/compose/preview"
-          className={clsx(
-            buttonVariants({ variant: 'outline' }),
-            'w-[180px] self-end'
-          )}
-          onClick={handlePreview}
-        >
-          Preview
-        </Link>
+        <Button type="submit">Save Recipe</Button>
       </form>
     </Form>
   );
