@@ -22,7 +22,7 @@ const Navbar = () => {
           path: '/',
           statePaths: ['/'],
           display: 'Browse',
-          icon: <Croissant className="mx-2 transition-all hover:rotate-90" />,
+          icon: <Croissant className="mx-2 hover:animate-spin" />,
         },
         {
           path: '/scrape',

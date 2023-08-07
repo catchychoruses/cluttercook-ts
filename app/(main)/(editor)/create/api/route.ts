@@ -17,9 +17,8 @@ type Recipe = {
 export async function POST(req: NextRequest) {
   const recipeRes: Recipe = await req.json();
 
-
   const imageRes: UploadApiResponse | undefined = await fetch(
-    'http://localhost:3000/api/upload-image',
+    `${process.env.BASE_URL}/api/upload-image`,
     {
       method: 'POST',
       body: JSON.stringify({ base64Picture: recipeRes.picture.base64Picture }),
@@ -29,18 +28,10 @@ export async function POST(req: NextRequest) {
 
   const session = await getServerSession(authOptions);
 
-  const sessionData = await prisma.session.findFirst({
-    where: {
-      user: {
-        email: session?.user?.email,
-      },
-    },
-  });
-
   try {
-    if (imageRes) {
+    if (imageRes && session?.user?.email) {
       const update = await prisma.user.update({
-        where: { id: sessionData?.userId },
+        where: { email: session?.user?.email },
         data: {
           recipes: {
             create: [
@@ -58,9 +49,8 @@ export async function POST(req: NextRequest) {
           },
         },
       });
-
-      const deleteScrapedPiture = await fetch(
-        `http://localhost:3000/api/upload-image?publicId=${recipeRes.picture.publicId}`,
+      await fetch(
+        `${process.env.BASE_URL}/api/upload-image?publicId=${recipeRes.picture.publicId}`,
         { method: 'DELETE' }
       );
       return NextResponse.json(update);

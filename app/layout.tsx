@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 async function getSession(cookie: string): Promise<Session> {
-  const response = await fetch(`http://localhost:3000/api/auth/session`, {
+  const response = await fetch(`${process.env.BASE_URL}/api/auth/session`, {
     headers: {
       cookie,
     },

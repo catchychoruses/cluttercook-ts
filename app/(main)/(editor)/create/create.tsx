@@ -3,6 +3,7 @@
 import React from 'react';
 import useSWR, { Fetcher } from 'swr';
 import { Composer } from '../composer';
+import { SpinnerCircular } from 'spinners-react';
 
 const fetcher: Fetcher<
   {
@@ -19,7 +20,7 @@ const fetcher: Fetcher<
 
 export default function Create({ url }: { url: string | null }) {
   const { data, isLoading, isValidating } = useSWR(
-    url ? `http://localhost:3000/scrape/api/?url=${url}` : null,
+    url ? `scrape/api/?url=${url}` : null,
     fetcher,
     {
       revalidateOnFocus: false,
@@ -28,9 +29,10 @@ export default function Create({ url }: { url: string | null }) {
     }
   );
 
-
   return isValidating ? (
-    <p>wait...</p>
+    <div className="flex justify-center p-10">
+      <SpinnerCircular color="white" size="15rem" />
+    </div>
   ) : (
     <>
       <h1 className="text-3xl font-semibold">New Recipe</h1>

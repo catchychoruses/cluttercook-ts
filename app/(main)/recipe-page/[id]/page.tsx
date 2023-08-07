@@ -7,12 +7,13 @@ export default async function Page({ params }: { params: { id: string } }) {
     title: string;
     createdAt: Date;
     description: string;
-    ingredients: string[];
-    instructions: string[];
+    ingredients: { ingredient: string }[];
+    instructions: { instruction: string }[];
     picture: { url: string };
   } = await fetch(
-    `http://localhost:3000/api/get-recipe?recipeId=${params.id}`
+    `${process.env.BASE_URL}/api/get-recipe?recipeId=${params.id}`
   ).then((res) => res.json());
+
 
   return (
     <div className="flex flex-col items-center justify-between">
@@ -37,13 +38,13 @@ export default async function Page({ params }: { params: { id: string } }) {
               <div className="p-4">
                 <h1 className="m-2 text-[2rem]">Ingredients</h1>
                 {recipe.ingredients.map((ingredient, index) => (
-                  <p key={index}>{`${index + 1}. ${ingredient}`}</p>
+                  <p key={index}>{`${index + 1}. ${ingredient.ingredient}`}</p>
                 ))}
               </div>
               <div className="p-4">
                 <h1 className="m-2 text-[2rem]">Instructions</h1>
                 {recipe.instructions.map((step, index) => (
-                  <p key={index}>{`${index + 1}. ${step}`}</p>
+                  <p key={index}>{`${index + 1}. ${step.instruction}`}</p>
                 ))}
               </div>
             </div>

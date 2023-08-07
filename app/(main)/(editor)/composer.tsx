@@ -14,7 +14,7 @@ import { X } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { AnimatePresence, motion } from 'framer-motion';
-import useFormPersist from 'react-hook-form-persist';
+import { SpinnerCircular } from 'spinners-react';
 
 const formSchema = z.object({
   title: z.string(),
@@ -100,7 +100,7 @@ export const Composer = ({
   const onSubmit = async () => {
     const values = getValues();
     try {
-      await fetch(isEditMode ? 'edit/api' : '/create/api', {
+      await fetch(isEditMode ? 'edit/api' : 'create/api', {
         body: JSON.stringify({
           ...values,
           ingredients: values.ingredients.map(
@@ -139,7 +139,9 @@ export const Composer = ({
   ]);
 
   return isLoading ? (
-    <p>wait...</p>
+    <div className="flex justify-center p-10">
+      <SpinnerCircular color="white" size="15rem" />
+    </div>
   ) : (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -156,11 +158,7 @@ export const Composer = ({
       </div>
       <div className="mb-6">
         <Label htmlFor="tags">Recipe Tags</Label>
-        <Input
-          id="tags"
-          placeholder="Tags separated by single whitespace"
-          {...register('tags')}
-        />
+        <Input id="tags" placeholder="Tags" {...register('tags')} />
       </div>
 
       <div className="mb-6">
