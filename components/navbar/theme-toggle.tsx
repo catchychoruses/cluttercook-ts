@@ -8,7 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../ui/tooltip';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 
 export function ThemeToggle({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme();
@@ -21,7 +21,7 @@ export function ThemeToggle({ className }: { className?: string }) {
             onClick={() =>
               theme === 'dark' ? setTheme('light') : setTheme('dark')
             }
-            className={clsx(
+            className={cn(
               buttonVariants({ size: 'icon', variant: 'outline' }),
               className
             )}

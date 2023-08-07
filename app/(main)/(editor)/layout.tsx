@@ -1,6 +1,5 @@
 import { PageWrapper } from '@/components/page-wrapper';
 import { RecipeMaker } from './recipe-maker';
-import { Wrapper } from './wrapper';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

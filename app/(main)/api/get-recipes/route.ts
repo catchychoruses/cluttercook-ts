@@ -1,5 +1,7 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import prisma from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
+import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
 
 export async function GET(req: Request) {
@@ -26,6 +28,9 @@ export async function GET(req: Request) {
     default:
       sortingType = { title: Prisma.SortOrder.desc };
   }
+
+  const session = await getServerSession(authOptions);
+
   const recipes = await prisma.recipe.findMany({
     where: {
       OR: [
@@ -40,13 +45,23 @@ export async function GET(req: Request) {
           },
         },
       ],
+      AND: [
+        {
+          user: {
+            email: session?.user?.email,
+          },
+        },
+      ],
     },
     select: {
       id: true,
       title: true,
+      description: true,
+      picture: true,
     },
     orderBy: [sortingType],
   });
 
+  console.log(recipes);
   return NextResponse.json(recipes);
 }

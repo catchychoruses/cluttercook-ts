@@ -32,17 +32,13 @@ export const BrowserSkeleton = () => {
 };
 
 export default function Browser() {
-  const [query, setQuery] = useState<string | null>(null);
-  const [sortingType, setSortingType] = useState('');
+  const [query, setQuery] = useState<string | null>('');
+  const [sortingType, setSortingType] = useState('datedesc');
 
   const [debouncedQuery] = useDebounce(query, 500);
 
   const { data, error, isLoading } = useSWR(
-    debouncedQuery
-      ? `/api/filter-recipes?query=${debouncedQuery}&sort=${
-          sortingType === '' ? 'datedesc' : sortingType
-        }`
-      : `/api/recipes?sort=${sortingType === '' ? 'datedesc' : sortingType}`,
+    `/api/get-recipes?query=${debouncedQuery}&sort=${sortingType}`,
     fetcher
   );
 

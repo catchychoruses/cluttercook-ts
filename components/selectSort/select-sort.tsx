@@ -3,8 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '../ui/button';
 import { CommandGroup, CommandItem, Command } from '@/components/ui/command';
 import { Check, ChevronsUpDown } from 'lucide-react';
-
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 
 type Props = {
   value: string;
@@ -48,7 +47,7 @@ export const SelectSort = ({ value, setValue }: Props) => {
                 }}
               >
                 <Check
-                  className={clsx(
+                  className={cn(
                     'mr-2 h-4 w-4',
                     value === type.value ? 'opacity-100' : 'opacity-0'
                   )}

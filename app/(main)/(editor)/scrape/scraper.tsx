@@ -41,7 +41,7 @@ export const Scraper = () => {
           control={form.control}
           name="url"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-[20rem]">
               <FormLabel>URL</FormLabel>
               <FormControl>
                 <Input placeholder="Recipe URL" {...field} />
@@ -49,7 +49,9 @@ export const Scraper = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Scrape recipe</Button>
+        <Button className="w-fit" type="submit">
+          Scrape recipe
+        </Button>
       </form>
     </Form>
   );

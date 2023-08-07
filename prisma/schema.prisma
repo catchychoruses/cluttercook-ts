@@ -64,9 +64,12 @@ model Recipe {
   userID       String
   title        String
   createdAt    DateTime @default(now())
+  lastEdited   DateTime?
+  tags         String[]
   description  String
-  ingredients  String
-  instructions String
+  ingredients  String[]
+  instructions String[]
+  url          String?
   picture        Picture?
 }
 

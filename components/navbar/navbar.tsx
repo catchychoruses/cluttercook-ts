@@ -1,6 +1,5 @@
 'use client';
 
-import clsx from 'clsx';
 import Link from 'next/link';
 import React from 'react';
 import { buttonVariants } from '../ui/button';
@@ -8,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './theme-toggle';
 import { Croissant, Import, PlusCircle } from 'lucide-react';
 import { SettingsButton } from './settings-button';
+import clsx from 'clsx';
 const Navbar = () => {
   const currentPath = usePathname();
 

@@ -10,8 +10,8 @@ const fetcher: Fetcher<
     recipeId: string;
     title: string;
     description: string;
-    ingredients: string;
-    instructions: string;
+    ingredients: { ingredient: string }[];
+    instructions: { instruction: string }[];
     picture: {
       url: string;
       publicId: string;

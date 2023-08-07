@@ -5,7 +5,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../ui/tooltip';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
+
 import { Settings } from 'lucide-react';
 import { buttonVariants } from '../ui/button';
 import Link from 'next/link';
@@ -17,9 +18,7 @@ export const SettingsButton = () => {
         <TooltipTrigger>
           <Link
             href={'/settings'}
-            className={clsx(
-              buttonVariants({ variant: 'outline', size: 'icon' })
-            )}
+            className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}
           >
             <Settings />
           </Link>

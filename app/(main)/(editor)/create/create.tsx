@@ -1,6 +1,5 @@
 'use client';
 
-import { UploadApiResponse } from 'cloudinary';
 import React from 'react';
 import useSWR, { Fetcher } from 'swr';
 import { Composer } from '../composer';
@@ -8,8 +7,8 @@ import { Composer } from '../composer';
 const fetcher: Fetcher<
   {
     title: string;
-    ingredients: string;
-    instructions: string;
+    ingredients: { ingredient: string }[];
+    instructions: { instruction: string }[];
     picture: {
       url: string;
       publicId: string;
@@ -20,7 +19,7 @@ const fetcher: Fetcher<
 
 export default function Create({ url }: { url: string | null }) {
   const { data, isLoading } = useSWR(
-    url !== undefined ? `http://localhost:3000/scrape/api/?url=${url}` : null,
+    url ? `http://localhost:3000/scrape/api/?url=${url}` : null,
     fetcher,
     {
       revalidateOnFocus: false,
@@ -28,6 +27,8 @@ export default function Create({ url }: { url: string | null }) {
       revalidateOnReconnect: false,
     }
   );
+
+  console.log(data);
 
   return (
     <>

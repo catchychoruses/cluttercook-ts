@@ -11,7 +11,8 @@ import {
 } from './ui/sheet';
 import { Separator } from './ui/separator';
 import { useState } from 'react';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
+
 import { usePathname } from 'next/navigation';
 
 const HamburgerIcon = () => (
@@ -36,7 +37,7 @@ export const HamburgerMenu = () => {
 
   return (
     <div
-      className={clsx('absolute left-1.5 ', {
+      className={cn('absolute left-1.5 ', {
         ['hidden']: currentPath === '/auth',
       })}
     >

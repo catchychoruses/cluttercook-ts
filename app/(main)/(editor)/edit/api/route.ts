@@ -6,8 +6,8 @@ type Recipe = {
   recipeId: string | null;
   title: string;
   description: string;
-  ingredients: string;
-  instructions: string;
+  ingredients: string[];
+  instructions: string[];
   picture: {
     base64Picture: string;
     publicId: string;
@@ -51,7 +51,15 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      return NextResponse.json(update);
+      return NextResponse.json({
+        ...update,
+        ingredients: update.ingredients.map((ingredient) => ({
+          ingredient: ingredient,
+        })),
+        instructions: update.instructions.map((instruction) => ({
+          instruction: instruction,
+        })),
+      });
     }
   } catch (err) {
     console.log(err);

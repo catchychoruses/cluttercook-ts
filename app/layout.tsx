@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Work_Sans } from 'next/font/google';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { Session } from 'next-auth';
@@ -38,7 +38,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={clsx(workSans.className)}>
+      <body className={cn(workSans.className)}>
         <AuthContext session={session}>
           <ThemeProvider
             attribute="class"

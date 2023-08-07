@@ -1,11 +1,5 @@
 import { PageWrapper } from '@/components/page-wrapper';
-import prisma from '@/lib/prisma';
 import Image from 'next/image';
-import { Button, buttonVariants } from '@/components/ui/button';
-import clsx from 'clsx';
-import Link from 'next/link';
-import { Skeleton } from '@/components/ui/skeleton';
-import placeholder from '../../../../public/placeholder.jpeg';
 import { Actions } from './actions';
 
 export default async function Page({ params }: { params: { id: string } }) {

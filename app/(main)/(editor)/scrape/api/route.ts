@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Recipe } from './types';
+import { AnalyzedInstructions, Recipe } from './types';
 import { uploadImage } from '@/lib/cloudinary';
 import { UploadApiResponse } from 'cloudinary';
 
@@ -10,7 +10,7 @@ export async function GET(req: Request) {
   const params = new URLSearchParams({
     apiKey: 'cc9efd0f91fc4ace906a868f9990d9e2',
     url: url || '',
-    analyze: 'false',
+    analyze: 'true',
     forceExtraction: 'false',
   });
 
@@ -26,25 +26,34 @@ export async function GET(req: Request) {
 
     const data: {
       title: string;
-      ingredients: string;
-      instructions: string;
+      tags?: string[];
+      ingredients: { ingredient: string }[];
+      instructions: { instruction: string }[];
       picture: {
         url: string | null;
         scrapedPublicId: string | undefined;
       };
+      url: string;
     } = {
       title: res.title,
-      ingredients:
-        res.extendedIngredients
-          ?.map((ingredient: any) => `${ingredient.original}`)
-          .join(', ') ?? '',
-      instructions: res.instructions,
+      ingredients: res.extendedIngredients?.map(({ original }) => ({
+        ingredient: original,
+      })) || [{ ingredient: '' }],
+      instructions: res.analyzedInstructions
+        ? res.analyzedInstructions[0].steps
+          ? res.analyzedInstructions[0].steps?.map(({ step }) => ({
+              instruction: step,
+            }))
+          : [{ instruction: '' }]
+        : [{ instruction: '' }],
       picture: {
         url: scrapedImg?.secure_url || null,
         scrapedPublicId: scrapedImg?.public_id,
       },
+      url: res.sourceUrl,
     };
 
+    console.log(data);
     return NextResponse.json(data);
   } catch (err) {
     return NextResponse.json(err);

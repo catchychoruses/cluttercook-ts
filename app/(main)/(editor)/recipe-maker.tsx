@@ -1,7 +1,7 @@
 'use client';
 
 import { buttonVariants } from '@/components/ui/button';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
@@ -10,7 +10,7 @@ const MakerNavbar = ({ pathname }: { pathname: string }) => (
   <div className="ml-6">
     <Link
       href={'/scrape'}
-      className={clsx(
+      className={cn(
         buttonVariants({ variant: 'outline' }),
         'relative top-[0.0625rem] w-24 rounded-b-none border-b-0',
         pathname !== '/scrape'
@@ -22,7 +22,7 @@ const MakerNavbar = ({ pathname }: { pathname: string }) => (
     </Link>
     <Link
       href={'/create'}
-      className={clsx(
+      className={cn(
         buttonVariants({ variant: 'outline' }),
         'relative top-[0.0625rem] w-24 rounded-b-none border-b-0',
         pathname !== '/create'

@@ -1,14 +1,8 @@
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useForm } from 'react-hook-form';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import Image from 'next/image';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import placeholder from '../../../public/placeholder.jpeg';
@@ -16,21 +10,35 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import { toBase64 } from '@/lib/utils';
+import { X } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Label } from '@/components/ui/label';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const formSchema = z.object({
   title: z.string(),
+  tags: z.string(),
   description: z.string(),
-  ingredients: z.string(),
-  instructions: z.string(),
+  ingredients: z
+    .object({
+      ingredient: z.string(),
+    })
+    .array(),
+  instructions: z
+    .object({
+      instruction: z.string(),
+    })
+    .array(),
 });
 
 type ComposerProps = {
   recipeId?: string | null;
   initialFormData: {
     title: string;
+    tags?: string;
     description?: string;
-    ingredients: string;
-    instructions: string;
+    ingredients: { ingredient: string }[];
+    instructions: { instruction: string }[];
     picture: {
       url?: string | null;
       publicId?: string;
@@ -52,32 +60,53 @@ export const Composer = ({
     initialFormData?.picture?.url || placeholder.src
   );
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const { control, register, handleSubmit, getValues } = useForm<
+    z.infer<typeof formSchema>
+  >({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: initialFormData?.title || '',
-      description: initialFormData?.description || '',
-      ingredients: initialFormData?.ingredients || '',
-      instructions: initialFormData?.instructions || '',
-    },
+    defaultValues: initialFormData || {},
   });
 
-  // note that the image input is not handled by react-hook-form and is instead provided to the upload API via Evil-Base64-Trickery
-  // this is Not Optimal but I have absolutely no idea what is
-  // in my defense, NextJS image optimization is a fun killer and I never liked it
+  const {
+    fields: ingredientsFields,
+    append: ingredientsAppend,
+    remove: ingredientsRemove,
+  } = useFieldArray({
+    control,
+    name: 'ingredients',
+  });
 
-  const handleImageInput = async (input: ChangeEvent<HTMLInputElement>) => {
-    if (input.currentTarget.files) {
-      const base64 = await toBase64(input.currentTarget.files[0]);
-      setPreviewImage(base64 as string);
-    }
-  };
+  const {
+    fields: instructionsFields,
+    append: instructionsAppend,
+    remove: instructionsRemove,
+  } = useFieldArray({
+    control,
+    name: 'instructions',
+  });
+
+  const handleImageInput = useCallback(
+    async (input: ChangeEvent<HTMLInputElement>) => {
+      if (input.currentTarget.files) {
+        const base64 = await toBase64(input.currentTarget.files[0]);
+        setPreviewImage(base64 as string);
+      }
+    },
+    []
+  );
 
   const onSubmit = async () => {
+    const values = getValues();
     try {
       await fetch(isEditMode ? 'edit/api' : '/create/api', {
         body: JSON.stringify({
-          ...form.getValues(),
+          ...values,
+          ingredients: values.ingredients.map(
+            (ingredient) => ingredient.ingredient
+          ),
+          instructions: values.instructions.map(
+            (instruction) => instruction.instruction
+          ),
           recipeId: recipeId,
           picture: {
             base64Picture: previewImage,
@@ -96,103 +125,183 @@ export const Composer = ({
     }
   };
 
-  // blame: Thomas Aspen
   useEffect(() => {
-    if (!isLoading && initialFormData != null) {
-      form.setValue('title', initialFormData.title);
-      form.setValue('description', initialFormData.description || '');
-      form.setValue('ingredients', initialFormData.ingredients);
-      form.setValue('instructions', initialFormData.instructions);
-      if (initialFormData.picture?.url) {
-        setPreviewImage(initialFormData.picture.url);
-      }
-      console.log(initialFormData, previewImage);
+    if (initialFormData?.picture?.url) {
+      setPreviewImage(initialFormData.picture.url);
     }
-  }, [isLoading, initialFormData, form]);
+    console.log(instructionsFields);
+  }, [initialFormData?.picture.url, instructionsFields]);
 
   return isLoading ? (
     <p>wait...</p>
   ) : (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-sm flex max-h-[70vh] flex-col flex-wrap gap-6 p-6"
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-sm flex flex-col gap-y-1.5 p-6"
+    >
+      <div className="mb-6">
+        <Label htmlFor="title">Title</Label>
+        <Input
+          id="title"
+          type="text"
+          placeholder="Recipe Title"
+          {...register('title')}
+        />
+      </div>
+      <div className="mb-6">
+        <Label htmlFor="tags">Recipe Tags</Label>
+        <Input
+          id="tags"
+          placeholder="Tags separated by single whitespace"
+          {...register('tags')}
+        />
+      </div>
+
+      <div className="mb-6">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          autoComplete="off"
+          id="description"
+          className="h-[5rem] resize-none overflow-y-scroll"
+          placeholder="Description"
+          {...register('description')}
+        />
+      </div>
+
+      <Label htmlFor="ingredients">Ingredients</Label>
+      <ScrollArea
+        id="ingredients"
+        className="mb-6 flex h-[20rem] rounded border p-4"
       >
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Recipe Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Recipe Name" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Input placeholder="Description" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="ingredients"
-          render={({ field }) => (
-            <FormItem className="">
-              <div className="w-full">
-                <FormLabel>Ingredients</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Ingredients" {...field} />
-                </FormControl>
-              </div>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="instructions"
-          render={({ field }) => (
-            <FormItem>
-              <div>
-                <FormLabel>Instructions</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Instructions" {...field} />
-                </FormControl>
-              </div>
-            </FormItem>
-          )}
-        />
-
-        <FormItem>
-          <div className=" mx-auto flex w-full flex-col items-center p-4">
-            <img
-              className="m-4 w-52 rounded"
-              src={previewImage}
-              alt="placeholder"
-            />
-            <FormControl>
+        <AnimatePresence>
+          {ingredientsFields.map((field, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -25 }}
+              transition={{ duration: 0.25 }}
+              className="flex items-center"
+            >
+              <div>{`${index + 1}.`}</div>
               <Input
-                className="w-fit"
-                type="file"
-                onChange={handleImageInput}
+                className="m-2 break-words"
+                defaultValue={field.ingredient}
+                {...register(`ingredients.${index}.ingredient` as const)}
               />
-            </FormControl>
-          </div>
-        </FormItem>
+              <Button
+                className="h-8 w-8"
+                size="icon"
+                variant={'outline'}
+                onClick={(e) => {
+                  e.preventDefault();
+                  ingredientsRemove(index);
+                }}
+              >
+                <X size={'1.5rem'} />
+              </Button>
+            </motion.div>
+          ))}
+          <motion.div
+            key={ingredientsFields.length}
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -25 }}
+            transition={{ duration: 0.25 }}
+            className="flex items-center"
+          >
+            <div>{`${ingredientsFields.length + 1}.`}</div>
+            <Input
+              className="m-2 w-[50%] select-none"
+              placeholder="New ingredient..."
+              onClick={() => ingredientsAppend({ ingredient: '' })}
+            />
+            <Button
+              className=" h-8 w-8 cursor-default select-none opacity-0"
+              size="icon"
+              variant={'outline'}
+              onClick={(e) => e.preventDefault()}
+            >
+              <X size={'1.5rem'} />
+            </Button>
+          </motion.div>
+        </AnimatePresence>
+      </ScrollArea>
 
-        <Button type="submit">Save Recipe</Button>
-      </form>
-    </Form>
+      <Label htmlFor="instructions">Instructions</Label>
+      <ScrollArea
+        id="instructions"
+        className="mb-6 flex h-[20rem] rounded border p-4 "
+      >
+        <AnimatePresence>
+          {instructionsFields.map((field, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -25 }}
+              transition={{ duration: 0.25 }}
+              className="flex items-center"
+            >
+              <div>{`${index + 1}.`}</div>
+              <Textarea
+                autoComplete="off"
+                className="max-height m-2 resize-none"
+                {...register(`instructions.${index}.instruction` as const)}
+              />
+              <Button
+                className="h-8 w-8"
+                size="icon"
+                variant={'outline'}
+                onClick={(e) => {
+                  e.preventDefault();
+                  instructionsRemove(index);
+                }}
+              >
+                <X size={'1.5rem'} />
+              </Button>
+            </motion.div>
+          ))}
+          <motion.div
+            key={instructionsFields.length}
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -25 }}
+            transition={{ duration: 0.25 }}
+            className="flex items-center"
+          >
+            <div>{`${instructionsFields.length + 1}.`}</div>
+            <Input
+              autoComplete="off"
+              className="m-2 w-[50%] select-none"
+              placeholder="Next step..."
+              onClick={() => instructionsAppend({ instruction: '' })}
+            />
+            <Button
+              className=" h-8 w-8 cursor-default select-none opacity-0"
+              size="icon"
+              variant={'outline'}
+              onClick={(e) => e.preventDefault()}
+            >
+              <X size={'1.5rem'} />
+            </Button>
+          </motion.div>
+        </AnimatePresence>
+      </ScrollArea>
+
+      <div className=" mx-auto flex w-full flex-col items-center p-4">
+        <Image
+          className="m-4 w-52 rounded"
+          src={previewImage}
+          width={200}
+          height={200}
+          alt="placeholder"
+        />
+        <Input className="w-fit" type="file" onChange={handleImageInput} />
+      </div>
+      <Button className=" ml-auto  w-fit" type="submit">
+        Save Recipe
+      </Button>
+    </form>
   );
 };

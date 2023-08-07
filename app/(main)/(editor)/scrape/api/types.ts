@@ -31,7 +31,7 @@ export interface Recipe {
   diets?: null[] | null;
   occasions?: null[] | null;
   instructions: string;
-  analyzedInstructions?: AnalyzedInstructionsEntity[] | null;
+  analyzedInstructions: AnalyzedInstructionsEntity[] | null;
   originalId?: null;
 }
 export interface ExtendedIngredientsEntity {
@@ -83,4 +83,31 @@ export interface IngredientsEntityOrEquipmentEntity1 {
 export interface Length {
   number: number;
   unit: string;
+}
+
+export interface AnalyzedInstructions {
+  parsedInstructions?: ParsedInstructionsEntity[] | null;
+  ingredients?: IngredientsEntityOrEquipmentEntity[] | null;
+  equipment?: IngredientsEntityOrEquipmentEntity[] | null;
+}
+export interface ParsedInstructionsEntity {
+  name: string;
+  steps?: StepsEntity[] | null;
+}
+
+export interface IngredientsEntityOrEquipmentEntity1 {
+  id: number;
+  name: string;
+  localizedName: string;
+  image: string;
+}
+export interface IngredientsEntityOrEquipmentEntity2 {
+  id: number;
+  name: string;
+  localizedName: string;
+  image: string;
+}
+export interface IngredientsEntityOrEquipmentEntity {
+  id: number;
+  name: string;
 }

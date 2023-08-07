@@ -7,9 +7,10 @@ import { ImageResponse, NextRequest, NextResponse } from 'next/server';
 
 type Recipe = {
   title: string;
+  tags: string;
   description: string;
-  ingredients: string;
-  instructions: string;
+  ingredients: string[];
+  instructions: string[];
   picture: { base64Picture: string; scrapedUrl?: string; publicId?: string };
 };
 
@@ -46,6 +47,7 @@ export async function POST(req: NextRequest) {
             create: [
               {
                 ...recipeRes,
+                tags: recipeRes.tags.split(' '),
                 picture: {
                   create: {
                     url: imageRes.secure_url,

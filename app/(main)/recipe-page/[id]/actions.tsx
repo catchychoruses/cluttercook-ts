@@ -12,7 +12,7 @@ import {
 import { buttonVariants, Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -36,7 +36,7 @@ export function Actions({ id }: { id: string }) {
   return (
     <div className="flex-col flex-wrap">
       <Link
-        className={clsx(buttonVariants({ variant: 'default' }), 'm-4')}
+        className={cn(buttonVariants({ variant: 'default' }), 'm-4')}
         href={`/edit?recipeId=${id}`}
       >
         Edit Recipe
@@ -62,13 +62,13 @@ export function Actions({ id }: { id: string }) {
         </AlertDialogContent>
       </AlertDialog>
       <Link
-        className={clsx(buttonVariants({ variant: 'default' }), 'm-4')}
+        className={cn(buttonVariants({ variant: 'default' }), 'm-4')}
         href={'/'}
       >
         Download as PDF
       </Link>
       <Link
-        className={clsx(buttonVariants({ variant: 'default' }), 'm-4')}
+        className={cn(buttonVariants({ variant: 'default' }), 'm-4')}
         href={'/'}
       >
         Download as .MD

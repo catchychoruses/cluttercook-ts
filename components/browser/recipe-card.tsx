@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Button, buttonVariants } from '../ui/button';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -43,7 +43,7 @@ export const RecipeCard = ({
 
   return (
     <motion.div
-      className={clsx('m-4 flex w-[95%] gap-8 rounded-md border')}
+      className={cn('m-4 flex w-[95%] gap-8 rounded-md border')}
       {...props}
     >
       <div className="relative min-h-[15rem]  min-w-[15rem]">
@@ -61,7 +61,7 @@ export const RecipeCard = ({
         <p className=" line-clamp-2">{description}</p>
         <Link
           href={`/recipe-page/${encodeURIComponent(id)}`}
-          className={clsx(buttonVariants(), 'max-w-[120px]')}
+          className={cn(buttonVariants(), 'max-w-[120px]')}
         >
           View Recipe
         </Link>
