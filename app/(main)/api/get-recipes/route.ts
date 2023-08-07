@@ -30,37 +30,42 @@ export async function GET(req: Request) {
   }
 
   const session = await getServerSession(authOptions);
+  try {
+    if (session?.user?.email) {
+      const recipes = await prisma.recipe.findMany({
+        where: {
+          OR: [
+            {
+              title: {
+                contains: Array.isArray(query) ? query[0] : query,
+              },
+            },
+            {
+              description: {
+                contains: Array.isArray(query) ? query[0] : query,
+              },
+            },
+          ],
+          AND: [
+            {
+              user: {
+                email: session?.user?.email,
+              },
+            },
+          ],
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          picture: true,
+        },
+        orderBy: [sortingType],
+      });
 
-  const recipes = await prisma.recipe.findMany({
-    where: {
-      OR: [
-        {
-          title: {
-            contains: Array.isArray(query) ? query[0] : query,
-          },
-        },
-        {
-          description: {
-            contains: Array.isArray(query) ? query[0] : query,
-          },
-        },
-      ],
-      AND: [
-        {
-          user: {
-            email: session?.user?.email,
-          },
-        },
-      ],
-    },
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      picture: true,
-    },
-    orderBy: [sortingType],
-  });
-
-  return NextResponse.json(recipes);
+      return NextResponse.json(recipes);
+    }
+  } catch (err) {
+    return NextResponse.error();
+  }
 }
