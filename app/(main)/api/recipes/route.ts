@@ -29,7 +29,6 @@ export async function GET(req: Request) {
 
   const session = await getServerSession(authOptions);
 
-  console.log(session);
   const sessionData = await prisma.session.findFirst({
     where: {
       user: {

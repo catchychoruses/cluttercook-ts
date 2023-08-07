@@ -1,7 +1,7 @@
 'use client';
 
 import { ScrollArea } from '../ui/scroll-area';
-import { SelectSort } from '../selectSort/selectSort';
+import { SelectSort } from '../selectSort/select-sort';
 import { RecipeCard } from './recipe-card';
 import { useState } from 'react';
 import { Search } from './search';

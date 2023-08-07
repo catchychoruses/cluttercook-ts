@@ -9,6 +9,7 @@ const fetcher: Fetcher<
   {
     recipeId: string;
     title: string;
+    tags: string;
     description: string;
     ingredients: { ingredient: string }[];
     instructions: { instruction: string }[];
@@ -25,7 +26,7 @@ export default function Edit() {
 
   const recipeId = searchParams.get('recipeId');
 
-  const { data, isLoading } = useSWR(
+  const { data, isLoading, isValidating } = useSWR(
     `/api/get-recipe?recipeId=${recipeId}`,
     fetcher,
     {
@@ -35,11 +36,13 @@ export default function Edit() {
     }
   );
 
-  return (
+  return isValidating ? (
+    <p>wait...</p>
+  ) : (
     <>
       <h1 className="text-3xl font-semibold">Edit Recipe</h1>
       <Composer
-        initialFormData={data || null}
+        initialFormData={data}
         isLoading={isLoading}
         isEditMode={true}
         recipeId={recipeId}

@@ -7,8 +7,8 @@ export default async function Page({ params }: { params: { id: string } }) {
     title: string;
     createdAt: Date;
     description: string;
-    ingredients: string;
-    instructions: string;
+    ingredients: string[];
+    instructions: string[];
     picture: { url: string };
   } = await fetch(
     `http://localhost:3000/api/get-recipe?recipeId=${params.id}`
@@ -36,11 +36,15 @@ export default async function Page({ params }: { params: { id: string } }) {
             <div className="m-4 border p-4 pb-24">
               <div className="p-4">
                 <h1 className="m-2 text-[2rem]">Ingredients</h1>
-                <p>{recipe.ingredients}</p>
+                {recipe.ingredients.map((ingredient, index) => (
+                  <p key={index}>{`${index + 1}. ${ingredient}`}</p>
+                ))}
               </div>
               <div className="p-4">
                 <h1 className="m-2 text-[2rem]">Instructions</h1>
-                <p>{recipe.instructions}</p>
+                {recipe.instructions.map((step, index) => (
+                  <p key={index}>{`${index + 1}. ${step}`}</p>
+                ))}
               </div>
             </div>
             <Actions id={params.id} />

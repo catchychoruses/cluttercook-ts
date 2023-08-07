@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useFieldArray, useForm } from 'react-hook-form';
 import Image from 'next/image';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, memo, useCallback, useEffect, useState } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import placeholder from '../../../public/placeholder.jpeg';
@@ -14,6 +14,7 @@ import { X } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { AnimatePresence, motion } from 'framer-motion';
+import useFormPersist from 'react-hook-form-persist';
 
 const formSchema = z.object({
   title: z.string(),
@@ -33,17 +34,19 @@ const formSchema = z.object({
 
 type ComposerProps = {
   recipeId?: string | null;
-  initialFormData: {
-    title: string;
-    tags?: string;
-    description?: string;
-    ingredients: { ingredient: string }[];
-    instructions: { instruction: string }[];
-    picture: {
-      url?: string | null;
-      publicId?: string;
-    };
-  } | null;
+  initialFormData:
+    | {
+        title: string;
+        tags?: string;
+        description?: string;
+        ingredients: { ingredient: string }[];
+        instructions: { instruction: string }[];
+        picture: {
+          url?: string | null;
+          publicId?: string;
+        };
+      }
+    | undefined;
   isLoading: boolean;
   isEditMode?: boolean;
 };
@@ -60,12 +63,11 @@ export const Composer = ({
     initialFormData?.picture?.url || placeholder.src
   );
 
-  const { control, register, handleSubmit, getValues } = useForm<
-    z.infer<typeof formSchema>
-  >({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialFormData || {},
-  });
+  const { watch, setValue, control, register, handleSubmit, getValues } =
+    useForm<z.infer<typeof formSchema>>({
+      resolver: zodResolver(formSchema),
+      defaultValues: initialFormData || {},
+    });
 
   const {
     fields: ingredientsFields,
@@ -129,8 +131,12 @@ export const Composer = ({
     if (initialFormData?.picture?.url) {
       setPreviewImage(initialFormData.picture.url);
     }
-    console.log(instructionsFields);
-  }, [initialFormData?.picture.url, instructionsFields]);
+  }, [
+    initialFormData?.picture?.url,
+    instructionsFields,
+    initialFormData,
+    isLoading,
+  ]);
 
   return isLoading ? (
     <p>wait...</p>

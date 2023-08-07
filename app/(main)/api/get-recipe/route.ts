@@ -10,6 +10,7 @@ export async function GET(req: Request) {
     },
     select: {
       id: true,
+      tags: true,
       title: true,
       createdAt: true,
       description: true,
@@ -25,7 +26,15 @@ export async function GET(req: Request) {
   });
 
   if (recipe) {
-    return NextResponse.json(recipe);
+    return NextResponse.json({
+      ...recipe,
+      ingredients: recipe.ingredients.map((ingredient) => ({
+        ingredient: ingredient,
+      })),
+      instructions: recipe.instructions.map((instruction) => ({
+        instruction: instruction,
+      })),
+    });
   } else {
     return NextResponse.error();
   }

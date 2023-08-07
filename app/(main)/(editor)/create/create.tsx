@@ -18,7 +18,7 @@ const fetcher: Fetcher<
 > = (url) => fetch(url).then((res) => res.json());
 
 export default function Create({ url }: { url: string | null }) {
-  const { data, isLoading } = useSWR(
+  const { data, isLoading, isValidating } = useSWR(
     url ? `http://localhost:3000/scrape/api/?url=${url}` : null,
     fetcher,
     {
@@ -28,12 +28,13 @@ export default function Create({ url }: { url: string | null }) {
     }
   );
 
-  console.log(data);
 
-  return (
+  return isValidating ? (
+    <p>wait...</p>
+  ) : (
     <>
       <h1 className="text-3xl font-semibold">New Recipe</h1>
-      <Composer initialFormData={data || null} isLoading={isLoading} />
+      <Composer initialFormData={data} isLoading={isLoading} />
     </>
   );
 }

@@ -37,8 +37,6 @@ export function uploadImage(
   imageUploaded: string,
   options?: cloudinary.UploadApiOptions
 ) {
-  console.log(imageUploaded, options);
-
   const res = new Promise<cloudinary.UploadApiResponse | undefined>(
     (resolve, reject) => {
       cloudinary.v2.uploader.upload(

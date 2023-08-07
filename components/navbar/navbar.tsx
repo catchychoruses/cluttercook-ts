@@ -14,7 +14,7 @@ const Navbar = () => {
   return (
     <nav
       className={clsx('mt-10 flex gap-4 max-md:hidden', {
-        ['hidden']: currentPath === '/auth',
+        ['hidden']: currentPath === '/auth/signin',
       })}
     >
       {[

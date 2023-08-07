@@ -17,7 +17,6 @@ type Recipe = {
 export async function POST(req: NextRequest) {
   const recipeRes: Recipe = await req.json();
 
-  console.log(recipeRes);
 
   const imageRes: UploadApiResponse | undefined = await fetch(
     'http://localhost:3000/api/upload-image',
@@ -64,11 +63,9 @@ export async function POST(req: NextRequest) {
         `http://localhost:3000/api/upload-image?publicId=${recipeRes.picture.publicId}`,
         { method: 'DELETE' }
       );
-      console.log(deleteScrapedPiture);
       return NextResponse.json(update);
     }
   } catch (err) {
-    console.log(err);
     return NextResponse.error();
   }
 }

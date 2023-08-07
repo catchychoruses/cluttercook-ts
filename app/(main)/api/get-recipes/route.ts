@@ -62,6 +62,5 @@ export async function GET(req: Request) {
     orderBy: [sortingType],
   });
 
-  console.log(recipes);
   return NextResponse.json(recipes);
 }

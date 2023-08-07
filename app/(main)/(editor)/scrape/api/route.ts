@@ -53,7 +53,6 @@ export async function GET(req: Request) {
       url: res.sourceUrl,
     };
 
-    console.log(data);
     return NextResponse.json(data);
   } catch (err) {
     return NextResponse.json(err);
