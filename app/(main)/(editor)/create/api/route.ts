@@ -11,19 +11,38 @@ type Recipe = {
   description: string;
   ingredients: string[];
   instructions: string[];
-  picture: { base64Picture: string; scrapedUrl?: string; publicId?: string };
+  picture: {
+    base64Picture: string | null;
+    scrapedUrl?: string;
+    publicId?: string;
+  };
 };
 
 export async function POST(req: NextRequest) {
   const recipeRes: Recipe = await req.json();
-  const imageRes: UploadApiResponse | undefined = await fetch(
-    `${process.env.BASE_URL}/api/upload-image`,
-    {
-      method: 'POST',
-      body: JSON.stringify({ base64Picture: recipeRes.picture.base64Picture }),
-      headers: { 'Content-type': 'application/json' },
+
+  const imageRes = {
+    secureUrl:
+      'https://res.cloudinary.com/ddfxnnmki/image/upload/v1691507606/Artboard_6_ncypek.jpg',
+    publicId: 'Artboard_6_ncypekm',
+  };
+  if (recipeRes.picture.base64Picture) {
+    const res: UploadApiResponse | undefined = await fetch(
+      `${process.env.BASE_URL}/api/upload-image`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          base64Picture: recipeRes.picture.base64Picture,
+        }),
+        headers: { 'Content-type': 'application/json' },
+      }
+    ).then((data) => data.json());
+
+    if (res) {
+      imageRes.secureUrl = res?.secure_url;
+      imageRes.publicId = res?.public_id;
     }
-  ).then((data) => data.json());
+  }
 
   const session = await getServerSession(authOptions);
 
@@ -39,8 +58,8 @@ export async function POST(req: NextRequest) {
                 tags: recipeRes.tags.split(' '),
                 picture: {
                   create: {
-                    url: imageRes.secure_url,
-                    publicId: imageRes.public_id,
+                    url: imageRes.secureUrl,
+                    publicId: imageRes.publicId,
                   },
                 },
               },

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { ChangeEvent, memo, useCallback, useEffect, useState } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import placeholder from '../../../public/placeholder.jpeg';
+import placeholder from '../../../public/placeholder.jpg';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
@@ -17,7 +17,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { SpinnerCircular } from 'spinners-react';
 
 const formSchema = z.object({
-  title: z.string(),
+  title: z.string().min(1, { message: 'Please provide a title' }),
   tags: z.string(),
   description: z.string(),
   ingredients: z
@@ -60,14 +60,19 @@ export const Composer = ({
   const { toast } = useToast();
   const router = useRouter();
   const [previewImage, setPreviewImage] = useState(
-    initialFormData?.picture?.url || placeholder.src
+    initialFormData?.picture?.url
   );
 
-  const { watch, setValue, control, register, handleSubmit, getValues } =
-    useForm<z.infer<typeof formSchema>>({
-      resolver: zodResolver(formSchema),
-      defaultValues: initialFormData || {},
-    });
+  const {
+    control,
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: initialFormData || {},
+  });
 
   const {
     fields: ingredientsFields,
@@ -111,7 +116,7 @@ export const Composer = ({
           ),
           recipeId: recipeId,
           picture: {
-            base64Picture: previewImage,
+            base64Picture: previewImage || null,
             scrapedUrl: initialFormData?.picture?.url,
             publicId: initialFormData?.picture?.publicId,
           },
@@ -153,8 +158,13 @@ export const Composer = ({
           id="title"
           type="text"
           placeholder="Recipe Title"
-          {...register('title')}
+          {...register('title', { required: true, maxLength: 30 })}
         />
+        {errors.title && (
+          <Label className="text-destructive decoration-destructive">
+            {errors.title.message}
+          </Label>
+        )}
       </div>
       <div className="mb-6">
         <Label htmlFor="tags">Recipe Tags</Label>
@@ -299,7 +309,7 @@ export const Composer = ({
       <div className=" mx-auto flex w-full flex-col items-center p-4">
         <Image
           className="m-4 w-52 rounded"
-          src={previewImage}
+          src={previewImage || placeholder.src}
           width={200}
           height={200}
           alt="placeholder"

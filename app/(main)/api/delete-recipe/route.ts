@@ -19,8 +19,6 @@ export async function DELETE(req: Request) {
     },
   });
 
-  console.log(recipeId);
-
   const deletePicture = prisma.picture.delete({
     where: { recipeId: recipeId || undefined },
   });
