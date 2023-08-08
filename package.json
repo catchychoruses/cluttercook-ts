@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && prisma db push && build",
     "start": "next start",
     "lint": "next lint",
     "commit": "npx cz"
