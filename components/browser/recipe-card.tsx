@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import { Button, buttonVariants } from '../ui/button';
 import { cn } from '@/lib/utils';
@@ -14,12 +12,23 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
+import { KeyedMutator } from 'swr';
 
 interface CardProps {
   title: string;
   id: string;
   description: string;
   picture: string;
+  mutate: KeyedMutator<
+    {
+      id: string;
+      title: string;
+      description: string;
+      picture: {
+        url: string;
+      };
+    }[]
+  >;
 }
 
 export const RecipeCard = ({
@@ -27,6 +36,7 @@ export const RecipeCard = ({
   title,
   description,
   picture,
+  mutate,
   ...props
 }: CardProps) => {
   const router = useRouter();
@@ -39,11 +49,17 @@ export const RecipeCard = ({
     if (deleteRes) {
       router.refresh();
     }
+    mutate();
   };
 
   return (
     <motion.div
-      className={cn('m-4 flex w-[95%] gap-8 rounded-md border')}
+      layout
+      key={id}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="m-4 flex w-[95%] gap-8 rounded-md border"
       {...props}
     >
       <div className="relative min-h-[15rem]  min-w-[15rem]">

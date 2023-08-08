@@ -13,7 +13,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={clsx('mt-10 flex gap-4 max-md:hidden', {
+      className={clsx('flex gap-x-4 pt-10 max-md:hidden', {
         ['hidden']: currentPath === '/auth/signin',
       })}
     >
