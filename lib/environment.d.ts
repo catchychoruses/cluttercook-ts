@@ -12,6 +12,7 @@ declare global {
       NEXTAUTH_URL: string;
       BASE_URL: string;
       ENV: 'test' | 'dev' | 'prod';
+      NODE_ENV: 'development' | 'production';
     }
   }
 }

@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { UploadApiResponse } from 'cloudinary';
 import { ImageResponse, NextRequest, NextResponse } from 'next/server';
 

@@ -1,5 +1,5 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import prisma from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { Prisma, User } from '@prisma/client';
 import { UploadApiResponse } from 'cloudinary';
 import { getServerSession } from 'next-auth';
