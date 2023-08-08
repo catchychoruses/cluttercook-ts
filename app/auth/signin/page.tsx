@@ -2,9 +2,10 @@ import { getServerSession } from 'next-auth';
 import { getProviders, signIn } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { Auth } from './auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export default async function Page() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (session) {
     redirect('/');

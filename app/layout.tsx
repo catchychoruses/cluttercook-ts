@@ -4,42 +4,32 @@ import { Work_Sans } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
-import { Session } from 'next-auth';
+import { Session, getServerSession } from 'next-auth';
 import { headers } from 'next/dist/client/components/headers';
 import AuthContext from './api/auth/AuthContext';
 import { HamburgerMenu } from '@/components/hamburger';
 import Navbar from '@/components/navbar/navbar';
+import { authOptions } from './api/auth/[...nextauth]/route';
+import { redirect } from 'next/navigation';
 
 const workSans = Work_Sans({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Cluttercook',
-  description: 'scuk me',
+  description: 'web scraper/recipe manager',
 };
-
-async function getSession(cookie: string): Promise<Session> {
-  const response = await fetch(`${process.env.BASE_URL}/api/auth/session`, {
-    headers: {
-      cookie,
-    },
-  });
-
-  const session = await response.json();
-
-  return Object.keys(session).length > 0 ? session : null;
-}
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession(headers().get('cookie') ?? '');
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(workSans.className)}>
-        <AuthContext session={session}>
+        <AuthContext session={session as Session}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
