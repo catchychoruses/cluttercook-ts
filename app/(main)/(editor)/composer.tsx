@@ -229,7 +229,7 @@ export const Composer = ({
               <Input
                 className="m-2 w-[50%] select-none"
                 placeholder="New ingredient..."
-                onClick={() => ingredientsAppend({ ingredient: '' })}
+                onFocus={() => ingredientsAppend({ ingredient: '' })}
               />
               <Button
                 className=" h-8 w-8 cursor-default select-none opacity-0"
@@ -292,7 +292,7 @@ export const Composer = ({
               autoComplete="off"
               className="m-2 w-[50%] select-none"
               placeholder="Next step..."
-              onClick={() => instructionsAppend({ instruction: '' })}
+              onFocus={() => instructionsAppend({ instruction: '' })}
             />
             <Button
               className=" h-8 w-8 cursor-default select-none opacity-0"
