@@ -177,59 +177,61 @@ export const Composer = ({
         id="ingredients"
         className="mb-6 flex h-[20rem] rounded border p-4"
       >
-        <AnimatePresence>
-          {ingredientsFields.map((field, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: -50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -25 }}
-              transition={{ duration: 0.25 }}
+        <ul>
+          <AnimatePresence initial={false}>
+            {ingredientsFields.map((field, index) => (
+              <motion.li
+                layout
+                key={index}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: 0.1 }}
+                className="flex items-center"
+              >
+                <div>{`${index + 1}.`}</div>
+                <Input
+                  className="m-2 break-words"
+                  defaultValue={field.ingredient}
+                  {...register(`ingredients.${index}.ingredient` as const)}
+                />
+                <Button
+                  className="h-8 w-8"
+                  size="icon"
+                  variant={'outline'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    ingredientsRemove(index);
+                  }}
+                >
+                  <X size={'1.5rem'} />
+                </Button>
+              </motion.li>
+            ))}
+            <motion.li
+              layout
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               className="flex items-center"
             >
-              <div>{`${index + 1}.`}</div>
+              <div>{`${ingredientsFields.length + 1}.`}</div>
               <Input
-                className="m-2 break-words"
-                defaultValue={field.ingredient}
-                {...register(`ingredients.${index}.ingredient` as const)}
+                className="m-2 w-[50%] select-none"
+                placeholder="New ingredient..."
+                onClick={() => ingredientsAppend({ ingredient: '' })}
               />
               <Button
-                className="h-8 w-8"
+                className=" h-8 w-8 cursor-default select-none opacity-0"
                 size="icon"
                 variant={'outline'}
-                onClick={(e) => {
-                  e.preventDefault();
-                  ingredientsRemove(index);
-                }}
+                onClick={(e) => e.preventDefault()}
               >
                 <X size={'1.5rem'} />
               </Button>
-            </motion.div>
-          ))}
-          <motion.div
-            key={ingredientsFields.length}
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -25 }}
-            transition={{ duration: 0.25 }}
-            className="flex items-center"
-          >
-            <div>{`${ingredientsFields.length + 1}.`}</div>
-            <Input
-              className="m-2 w-[50%] select-none"
-              placeholder="New ingredient..."
-              onClick={() => ingredientsAppend({ ingredient: '' })}
-            />
-            <Button
-              className=" h-8 w-8 cursor-default select-none opacity-0"
-              size="icon"
-              variant={'outline'}
-              onClick={(e) => e.preventDefault()}
-            >
-              <X size={'1.5rem'} />
-            </Button>
-          </motion.div>
-        </AnimatePresence>
+            </motion.li>
+          </AnimatePresence>
+        </ul>
       </ScrollArea>
 
       <Label htmlFor="instructions">Instructions</Label>
@@ -240,11 +242,12 @@ export const Composer = ({
         <AnimatePresence>
           {instructionsFields.map((field, index) => (
             <motion.div
+              layout
               key={index}
-              initial={{ opacity: 0, y: -50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -25 }}
-              transition={{ duration: 0.25 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 0.1 }}
               className="flex items-center"
             >
               <div>{`${index + 1}.`}</div>

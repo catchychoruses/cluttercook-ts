@@ -18,7 +18,7 @@ const fetcher: Fetcher<
   string
 > = (url) => fetch(url).then((res) => res.json());
 
-export default function Create({ url }: { url: string | null }) {
+export default function Create({ url }: { url: string | undefined }) {
   const { data, isLoading, isValidating } = useSWR(
     url ? `scrape/api/?url=${url}` : null,
     fetcher,
@@ -28,6 +28,7 @@ export default function Create({ url }: { url: string | null }) {
       revalidateOnReconnect: false,
     }
   );
+
 
   return isValidating ? (
     <div className="flex justify-center p-10">

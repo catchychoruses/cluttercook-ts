@@ -8,7 +8,7 @@ export async function GET(req: Request) {
   const url = searchParams.get('url');
 
   const params = new URLSearchParams({
-    apiKey: 'cc9efd0f91fc4ace906a868f9990d9e2',
+    apiKey: process.env.SCRAPER_SECRET,
     url: url || '',
     analyze: 'true',
     forceExtraction: 'false',
@@ -23,7 +23,6 @@ export async function GET(req: Request) {
     ).then((res) => res.json());
 
     const scrapedImg = await uploadImage(res.image, { overwrite: true });
-
     const data: {
       title: string;
       tags?: string[];

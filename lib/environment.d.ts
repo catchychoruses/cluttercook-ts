@@ -11,6 +11,7 @@ declare global {
       NEXTAUTH_SECRET: string;
       NEXTAUTH_URL: string;
       BASE_URL: string;
+      SCRAPER_SECRET: string;
       ENV: 'test' | 'dev' | 'prod';
       NODE_ENV: 'development' | 'production';
     }

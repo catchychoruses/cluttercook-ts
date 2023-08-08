@@ -9,7 +9,7 @@ type Params = {
 export default function Page({ searchParams }: Params) {
   return (
     <Wrapper>
-      <Create url={searchParams.url || null} />
+      <Create url={searchParams.url} />
     </Wrapper>
   );
 }

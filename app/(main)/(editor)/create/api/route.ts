@@ -16,7 +16,6 @@ type Recipe = {
 
 export async function POST(req: NextRequest) {
   const recipeRes: Recipe = await req.json();
-
   const imageRes: UploadApiResponse | undefined = await fetch(
     `${process.env.BASE_URL}/api/upload-image`,
     {
