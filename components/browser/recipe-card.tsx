@@ -19,16 +19,18 @@ interface CardProps {
   id: string;
   description: string;
   picture: string;
-  mutate: KeyedMutator<
-    {
+  mutate: KeyedMutator<{
+    recipes: {
       id: string;
       title: string;
       description: string;
       picture: {
         url: string;
       };
-    }[]
-  >;
+    }[];
+    totalRecipes: number;
+    totalPages: number;
+  }>;
 }
 
 export const RecipeCard = ({
@@ -37,7 +39,6 @@ export const RecipeCard = ({
   description,
   picture,
   mutate,
-  ...props
 }: CardProps) => {
   const router = useRouter();
 
@@ -60,14 +61,13 @@ export const RecipeCard = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="m-4 flex w-[95%] gap-8 rounded-md border"
-      {...props}
     >
-      <div className="relative min-h-[15rem]  min-w-[15rem]">
+      <div className="h-[10rem] min-w-[10rem]">
         <Image
-          className="rounded-md"
+          className="rounded"
           src={picture}
-          objectFit="cover"
-          layout="fill"
+          width={184}
+          height={184}
           alt="picture"
         />
       </div>

@@ -3,57 +3,87 @@
 import { ScrollArea } from '../ui/scroll-area';
 import { SelectSort } from '../selectSort/select-sort';
 import { RecipeCard } from './recipe-card';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Search } from './search';
 import useSWR, { Fetcher } from 'swr';
 import { useDebounce } from 'use-debounce';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Skeleton } from '../ui/skeleton';
+import PaginationMenu from './pagination-menu';
+import usePagination from './usePagination';
+import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
+import { SORTING_TYPES } from '@/lib/types';
 
 const fetcher: Fetcher<
   {
-    id: string;
-    title: string;
-    description: string;
-    picture: { url: string };
-  }[],
+    recipes: {
+      id: string;
+      title: string;
+      description: string;
+      picture: { url: string };
+    }[];
+    totalRecipes: number;
+    totalPages: number;
+  },
   string
 > = (url) => fetch(url).then((res) => res.json());
 
 function BrowserSkeleton() {
   const SkeletonDiv = () => (
-    <motion.div className="m-4 flex w-[95%] gap-8 rounded-md border">
+    <div className="m-4 flex w-[95%] gap-8 rounded-md border">
       <Skeleton className="h-44 w-52 rounded-md" />
       <Skeleton className="w-[90%] rounded-md" />
-    </motion.div>
+    </div>
   );
 
   return (
-    <AnimatePresence>
+    <>
       <SkeletonDiv />
       <SkeletonDiv />
       <SkeletonDiv />
       <SkeletonDiv />
-    </AnimatePresence>
+    </>
   );
 }
 
 export default function Browser() {
   const [query, setQuery] = useState<string | null>('');
-  const [sortingType, setSortingType] = useState('datedesc');
+
+  const [localSortingType, setLocalSortingType] = useLocalStorage(
+    'sortingType',
+    SORTING_TYPES.DATE_DESC
+  );
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [debouncedQuery] = useDebounce(query, 500);
 
   const { data, error, isLoading, mutate } = useSWR(
-    `/api/get-recipes?query=${debouncedQuery}&sort=${sortingType}`,
+    `/api/get-recipes?query=${debouncedQuery}&sort=${localSortingType}&page=${currentPage}`,
     fetcher
   );
+
+  const paginationRange = usePagination({
+    totalPages: data?.totalPages || 1,
+    currentPage: currentPage,
+  });
+
+  paginationRange.map((page) => {
+  });
 
   return (
     <div className=" w-[90vw]">
       <div className="flex flex-nowrap justify-end gap-4 pb-6 max-md:justify-between ">
+        <PaginationMenu
+          currentPage={currentPage}
+          handlePageChange={(page) => setCurrentPage(page)}
+          paginationRange={paginationRange}
+        />
         <Search query={query} setTopQuery={setQuery} />
-        <SelectSort value={sortingType} setValue={setSortingType} />
+        <SelectSort
+          currentSortingType={localSortingType}
+          setCurrentSortingType={setLocalSortingType}
+        />
       </div>
       <div className="rounded-md border">
         <ScrollArea className="h-[70vh] rounded-md p-4 ">
@@ -64,8 +94,8 @@ export default function Browser() {
               'Something went wrong :('
             ) : (
               <AnimatePresence>
-                {data?.length ? (
-                  data.map((recipe) => (
+                {data?.recipes?.length ? (
+                  data.recipes.map((recipe) => (
                     <RecipeCard
                       key={recipe.id}
                       id={recipe.id}

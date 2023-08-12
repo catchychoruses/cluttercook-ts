@@ -59,6 +59,7 @@ export const Composer = ({
 }: ComposerProps) => {
   const { toast } = useToast();
   const router = useRouter();
+
   const [previewImage, setPreviewImage] = useState(
     initialFormData?.picture?.url
   );
@@ -125,23 +126,18 @@ export const Composer = ({
         headers: { 'Content-type': 'application/json' },
       }).then((res) => res.json());
 
-      toast({ description: 'Recipe saved' });
+      toast({
+        description: 'Recipe saved!',
+        duration: 1500,
+      });
       router.push(`/`);
     } catch (err) {
-      toast({ description: `Something went wrong... ${err}` });
+      toast({
+        description: `Something went wrong... ${err}`,
+        variant: 'destructive',
+      });
     }
   };
-
-  useEffect(() => {
-    if (initialFormData?.picture?.url) {
-      setPreviewImage(initialFormData.picture.url);
-    }
-  }, [
-    initialFormData?.picture?.url,
-    instructionsFields,
-    initialFormData,
-    isLoading,
-  ]);
 
   return isLoading ? (
     <div className="flex justify-center p-10">
@@ -188,7 +184,7 @@ export const Composer = ({
         className="mb-6 flex h-[20rem] rounded border p-4"
       >
         <ul>
-          <AnimatePresence initial={false}>
+          <AnimatePresence initial={false} mode="popLayout">
             {ingredientsFields.map((field, index) => (
               <motion.li
                 layout
@@ -196,11 +192,12 @@ export const Composer = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ delay: 0.1 }}
+                transition={{ type: 'spring' }}
                 className="flex items-center"
               >
                 <div>{`${index + 1}.`}</div>
                 <Input
+                  autoComplete="none"
                   className="m-2 break-words"
                   defaultValue={field.ingredient}
                   {...register(`ingredients.${index}.ingredient` as const)}
@@ -225,8 +222,11 @@ export const Composer = ({
               exit={{ opacity: 0 }}
               className="flex items-center"
             >
-              <div>{`${ingredientsFields.length + 1}.`}</div>
+              <div className="opacity-0">{`${
+                ingredientsFields.length + 1
+              }.`}</div>
               <Input
+                autoComplete="off"
                 className="m-2 w-[50%] select-none"
                 placeholder="New ingredient..."
                 onFocus={() => ingredientsAppend({ ingredient: '' })}
@@ -249,7 +249,7 @@ export const Composer = ({
         id="instructions"
         className="mb-6 flex h-[20rem] rounded border p-4 "
       >
-        <AnimatePresence>
+        <AnimatePresence initial={false} mode="popLayout">
           {instructionsFields.map((field, index) => (
             <motion.div
               layout
@@ -257,11 +257,12 @@ export const Composer = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ delay: 0.1 }}
+              transition={{ type: 'spring' }}
               className="flex items-center"
             >
               <div>{`${index + 1}.`}</div>
               <Textarea
+                defaultValue={field.instruction}
                 autoComplete="off"
                 className="max-height m-2 resize-none"
                 {...register(`instructions.${index}.instruction` as const)}
@@ -280,14 +281,15 @@ export const Composer = ({
             </motion.div>
           ))}
           <motion.div
-            key={instructionsFields.length}
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -25 }}
-            transition={{ duration: 0.25 }}
+            layout
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="flex items-center"
           >
-            <div>{`${instructionsFields.length + 1}.`}</div>
+            <div className="opacity-0">{`${
+              instructionsFields.length + 1
+            }.`}</div>
             <Input
               autoComplete="off"
               className="m-2 w-[50%] select-none"
@@ -308,7 +310,7 @@ export const Composer = ({
 
       <div className=" mx-auto flex w-full flex-col items-center p-4">
         <Image
-          className="m-4 w-52 rounded"
+          className="m-4 w-52 rounded border"
           src={previewImage || placeholder.src}
           width={200}
           height={200}

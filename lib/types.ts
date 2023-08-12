@@ -6,3 +6,10 @@ export type Recipe = {
   ingredients: string;
   instructions: string;
 };
+
+export enum SORTING_TYPES {
+  TITLE_DESC = 'titledesc',
+  TITLE_ASC = 'titleasc',
+  DATE_DESC = 'datedesc',
+  DATE_ASC = 'dateasc',
+}

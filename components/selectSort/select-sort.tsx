@@ -4,21 +4,47 @@ import { Button } from '../ui/button';
 import { CommandGroup, CommandItem, Command } from '@/components/ui/command';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SORTING_TYPES } from '@/lib/types';
+import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
 
 type Props = {
-  value: string;
-  setValue: Dispatch<SetStateAction<string>>;
+  currentSortingType: SORTING_TYPES;
+  setCurrentSortingType: (
+    value: SORTING_TYPES | ((val: SORTING_TYPES) => SORTING_TYPES)
+  ) => void;
 };
 
 const SORTING_TYPE = [
-  { value: 'titledesc', label: 'Name Descending' },
-  { value: 'titleasc', label: 'Name Ascending' },
-  { value: 'datedesc', label: 'Date Descending' },
-  { value: 'dateasc', label: 'Date Ascending' },
+  {
+    value: SORTING_TYPES.TITLE_DESC,
+    label: 'Title Desc.',
+  },
+  {
+    value: SORTING_TYPES.TITLE_ASC,
+    label: 'Title Asc.',
+  },
+  {
+    value: SORTING_TYPES.DATE_DESC,
+    label: 'Date Desc.',
+  },
+  {
+    value: SORTING_TYPES.DATE_ASC,
+    label: 'Date Asc.',
+  },
 ];
 
-export const SelectSort = ({ value, setValue }: Props) => {
+export const SelectSort = ({
+  currentSortingType,
+  setCurrentSortingType,
+}: Props) => {
   const [open, setOpen] = useState(false);
+
+  const handleSelectSortingType = (selectedType: SORTING_TYPES) => {
+    if (currentSortingType !== selectedType) {
+      setCurrentSortingType(selectedType);
+    }
+    setOpen(false);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -26,33 +52,34 @@ export const SelectSort = ({ value, setValue }: Props) => {
         <Button
           variant="outline"
           role="combobox"
-          className="w-[200px] justify-between"
+          className="w-[180px] justify-between"
           aria-expanded={open}
         >
-          {value
-            ? SORTING_TYPE.find((type) => type.value === value)?.label
+          {currentSortingType
+            ? SORTING_TYPE.find((type) => type.value === currentSortingType)
+                ?.label
             : 'Sort by:'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[180px] p-0">
         <Command>
           <CommandGroup>
             {SORTING_TYPE.map((type) => (
               <CommandItem
+                className="pl-0 pr-4"
                 key={type.value}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? '' : currentValue);
-                  setOpen(false);
-                }}
+                onSelect={() => handleSelectSortingType(type.value)}
               >
                 <Check
                   className={cn(
                     'mr-2 h-4 w-4',
-                    value === type.value ? 'opacity-100' : 'opacity-0'
+                    currentSortingType === type.value
+                      ? 'opacity-100'
+                      : 'opacity-0'
                   )}
                 />
-                {type.value}
+                {type.label}
               </CommandItem>
             ))}
           </CommandGroup>

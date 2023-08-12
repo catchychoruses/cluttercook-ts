@@ -5,12 +5,10 @@ import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { Session, getServerSession } from 'next-auth';
-import { headers } from 'next/dist/client/components/headers';
 import AuthContext from './api/auth/AuthContext';
 import { HamburgerMenu } from '@/components/hamburger';
 import Navbar from '@/components/navbar/navbar';
 import { authOptions } from './api/auth/[...nextauth]/route';
-import { redirect } from 'next/navigation';
 
 const workSans = Work_Sans({ subsets: ['latin'] });
 
