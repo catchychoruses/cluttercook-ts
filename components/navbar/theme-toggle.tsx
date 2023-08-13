@@ -9,9 +9,24 @@ import {
   TooltipTrigger,
 } from '../ui/tooltip';
 import { cn } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 export function ThemeToggle({ className }: { className?: string }) {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, systemTheme } = useTheme();
+
+  const [currentTheme, setCurrentTheme] = useState('');
+
+  useEffect(() => {
+    setCurrentTheme(
+      theme === 'system'
+        ? systemTheme === 'light'
+          ? 'light'
+          : 'dark'
+        : theme === 'light'
+        ? 'light'
+        : 'dark'
+    );
+  }, [systemTheme, theme]);
 
   return (
     <TooltipProvider>
@@ -19,7 +34,7 @@ export function ThemeToggle({ className }: { className?: string }) {
         <TooltipTrigger>
           <div
             onClick={() =>
-              theme === 'dark' ? setTheme('light') : setTheme('dark')
+              currentTheme === 'dark' ? setTheme('light') : setTheme('dark')
             }
             className={cn(
               buttonVariants({ size: 'icon', variant: 'outline' }),
@@ -32,7 +47,7 @@ export function ThemeToggle({ className }: { className?: string }) {
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          {theme == 'dark' ? (
+          {theme === 'dark' ? (
             <p>Switch to Light Mode</p>
           ) : (
             <p>Switch to Dark Mode</p>
