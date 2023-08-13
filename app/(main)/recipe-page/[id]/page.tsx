@@ -14,7 +14,6 @@ export default async function Page({ params }: { params: { id: string } }) {
     `${process.env.BASE_URL}/api/get-recipe?recipeId=${params.id}`
   ).then((res) => res.json());
 
-
   return (
     <div className="flex flex-col items-center justify-between">
       <PageWrapper>

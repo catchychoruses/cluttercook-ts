@@ -11,7 +11,6 @@ export async function GET(req: Request) {
     },
     select: {
       id: true,
-      tags: true,
       title: true,
       createdAt: true,
       description: true,

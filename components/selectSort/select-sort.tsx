@@ -1,17 +1,14 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Button } from '../ui/button';
 import { CommandGroup, CommandItem, Command } from '@/components/ui/command';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SORTING_TYPES } from '@/lib/types';
-import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
 
 type Props = {
   currentSortingType: SORTING_TYPES;
-  setCurrentSortingType: (
-    value: SORTING_TYPES | ((val: SORTING_TYPES) => SORTING_TYPES)
-  ) => void;
+  setCurrentSortingType: (value: SORTING_TYPES) => void;
 };
 
 const SORTING_TYPE = [
