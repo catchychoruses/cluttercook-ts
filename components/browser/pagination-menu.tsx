@@ -7,17 +7,20 @@ import {
 import { PaginationRange } from './usePagination';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 type Props = {
   currentPage: number;
   handlePageChange: (page: number) => void;
   paginationRange: PaginationRange;
+  className?: string;
 };
 
 export default function PaginationMenu({
   currentPage,
   handlePageChange,
   paginationRange,
+  className,
 }: Props) {
   if (currentPage === 0 || paginationRange.length < 2) {
     return null;
@@ -34,20 +37,16 @@ export default function PaginationMenu({
   let lastPage = paginationRange[paginationRange.length - 1];
 
   return (
-    <div className="mr-auto flex gap-2 ">
-      {currentPage === 1 ? (
-        <Button
-          className="pointer-events-none select-none opacity-0"
-          variant="outline"
-          size="icon"
-        >
-          <LucideArrowLeft />
-        </Button>
-      ) : (
-        <Button variant="outline" size="icon" onClick={onPrevious}>
-          <LucideArrowLeft />
-        </Button>
-      )}
+    <div className={cn('mr-auto flex gap-2 max-md:mt-4', className)}>
+      <Button
+        className={cn(currentPage === 1 && 'pointer-events-none opacity-50')}
+        variant="outline"
+        size="icon"
+        onClick={onPrevious}
+      >
+        <LucideArrowLeft />
+      </Button>
+
       {paginationRange.map((pageNumber, index) => {
         if (pageNumber === 'DOTS') {
           return (
@@ -69,7 +68,9 @@ export default function PaginationMenu({
         );
       })}
       <Button
-        className={clsx({ hidden: currentPage === lastPage })}
+        className={cn(
+          currentPage === lastPage && 'pointer-events-none opacity-50'
+        )}
         variant="outline"
         size="icon"
         onClick={() => onNext()}

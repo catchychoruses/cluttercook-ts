@@ -47,7 +47,7 @@ export function ThemeToggle({ className }: { className?: string }) {
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          {theme === 'dark' ? (
+          {currentTheme === 'dark' ? (
             <p>Switch to Light Mode</p>
           ) : (
             <p>Switch to Dark Mode</p>

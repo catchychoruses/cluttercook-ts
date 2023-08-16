@@ -15,7 +15,7 @@ export const Search = ({ query, setTopQuery }: SearchInputProps) => {
 
   return (
     <Input
-      className="w-60 max-md:w-52"
+      className="w-50"
       placeholder="Find recipe..."
       value={query || ''}
       onChange={(e) => handleChange(e.target.value)}

@@ -43,9 +43,10 @@ export default function Browser() {
   });
 
   return (
-    <div className=" w-[90vw]">
-      <div className="flex flex-nowrap justify-end gap-4 pb-6 max-md:justify-between ">
+    <div className="w-[95vw] md:w-[90vw]">
+      <div className="flex flex-wrap justify-end gap-4 pb-6 max-md:justify-between max-md:pt-4 ">
         <PaginationMenu
+          className="max-lg:hidden"
           currentPage={currentPage}
           handlePageChange={(page: number) => setCurrentPage(page)}
           paginationRange={paginationRange}
@@ -56,7 +57,7 @@ export default function Browser() {
           setCurrentSortingType={setLocalSortingType}
         />
       </div>
-      <div className="rounded-md border">
+      <div className="flex flex-col rounded-md border max-md:h-[65vh]">
         <Page
           debouncedQuery={debouncedQuery}
           sortingType={localSortingType}
@@ -67,6 +68,14 @@ export default function Browser() {
           debouncedQuery={debouncedQuery}
           sortingType={localSortingType}
           currentPage={currentPage}
+        />
+      </div>
+      <div className="flex justify-center lg:hidden">
+        <PaginationMenu
+          className=" mx-auto mt-2 lg:hidden"
+          currentPage={currentPage}
+          handlePageChange={(page: number) => setCurrentPage(page)}
+          paginationRange={paginationRange}
         />
       </div>
     </div>

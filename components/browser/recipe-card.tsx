@@ -3,7 +3,6 @@ import { Button, buttonVariants } from '../ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-
 import { MoreHorizontal } from 'lucide-react';
 import {
   DropdownMenu,
@@ -13,6 +12,16 @@ import {
 } from '../ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
 import { KeyedMutator } from 'swr';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from '../ui/alert-dialog';
+import { AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
+import { useToast } from '../ui/use-toast';
 
 interface CardProps {
   title: string;
@@ -31,6 +40,7 @@ interface CardProps {
     totalRecipes: number;
     totalPages: number;
   }>;
+  index: number;
 }
 
 export const RecipeCard = ({
@@ -39,18 +49,23 @@ export const RecipeCard = ({
   description,
   picture,
   mutate,
+  index,
 }: CardProps) => {
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleDelete = async () => {
-    const deleteRes = await fetch(`/api/delete-recipe?recipeId=${id}`, {
-      method: 'DELETE',
-    });
-
-    if (deleteRes) {
-      router.refresh();
+    try {
+      const deleteRes = await fetch(`/api/delete-recipe?recipeId=${id}`, {
+        method: 'DELETE',
+      });
+      if (deleteRes) {
+        toast({ description: 'Recipe deleleted.' });
+        mutate();
+      }
+    } catch (error) {
+      toast({ description: 'Something went wrong...' });
     }
-    mutate();
   };
 
   return (
@@ -60,44 +75,61 @@ export const RecipeCard = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="m-4 flex w-[95%] gap-8 rounded-md border"
+      className="m-auto flex h-40 w-[95%] justify-between gap-y-8 rounded-[6px] border md:h-[12.5rem]"
     >
-      <div className="h-[10rem] min-w-[10rem]">
+      <div className="h- 40 relative flex min-w-[9rem] md:h-[12.375rem] md:min-w-[12.5rem]">
         <Image
-          className="rounded"
+          className="rounded-s-[5px] border-e object-cover"
           src={picture}
-          width={184}
-          height={184}
+          fill
           alt="picture"
+          priority={index === 0}
         />
       </div>
 
-      <div className="flex flex-col gap-8 p-4">
-        <h1 className="text-[2rem] font-semibold ">{title}</h1>
-        <p className=" line-clamp-2">{description}</p>
+      <div className="m-2 ml-3 flex flex-col justify-between gap-2 md:p-4 lg:w-[36rem]">
+        <h1 className="font-semibold md:text-2xl">{title}</h1>
+        <p className=" line-clamp-2 max-md:hidden">{description}</p>
         <Link
           href={`/recipe-page/${encodeURIComponent(id)}`}
-          className={cn(buttonVariants(), 'max-w-[120px]')}
+          className={cn(buttonVariants({ size: 'sm' }), ' w-28 md:w-32')}
         >
           View Recipe
         </Link>
       </div>
-      <div className="m-4 ml-auto">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              className="text-destructive"
-              onClick={handleDelete}
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="m-2 ml-auto md:m-4">
+        <AlertDialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" className="h-8 w-8">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="max-md:mr-[1.75rem]">
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem className="text-destructive">
+                  Delete
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <h1 className="py-2 text-[2rem]">Delete Recipe</h1>
+              Are you sure you want to delete
+              <span className="text-destructive">{` ${title}`}?</span>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="text-destructive"
+                onClick={handleDelete}
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </motion.div>
   );

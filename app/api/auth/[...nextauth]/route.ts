@@ -1,8 +1,8 @@
 import { prisma } from '@/lib/prisma';
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth, { Awaitable, NextAuthOptions, User } from 'next-auth';
 import { Adapter } from 'next-auth/adapters';
 import GithubProvider from 'next-auth/providers/github';
-import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 
 export const authOptions: NextAuthOptions = {
@@ -19,9 +19,40 @@ export const authOptions: NextAuthOptions = {
         params: { scope: 'read:user user:email' },
       },
     }),
-    GoogleProvider({
+    /* GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }), */
+    CredentialsProvider({
+      credentials: {
+        email: {
+          label: 'Email',
+          type: 'text',
+        },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials.password) {
+          return null;
+        }
+
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        });
+
+        if (user?.name !== 'admin') {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          randomKey: 'Hey cool',
+        };
+      },
     }),
   ],
   session: {

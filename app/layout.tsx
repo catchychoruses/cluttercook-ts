@@ -35,12 +35,15 @@ export default async function RootLayout({
             storageKey="theme"
           >
             <HamburgerMenu />
-            <h1 className="absolute left-32 top-4 text-[2rem] font-semibold md:hidden">
-              ClutterCook
-            </h1>
-            <div className="container p-0">
-              <Navbar />
-            </div>
+            <p
+              className={
+                'absolute left-0 right-0 mx-auto mt-6 w-32 text-3xl font-semibold md:hidden'
+              }
+            >
+              Cluttercook
+            </p>
+
+            <Navbar />
             {children}
           </ThemeProvider>
 

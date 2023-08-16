@@ -49,8 +49,9 @@ export const SelectSort = ({
         <Button
           variant="outline"
           role="combobox"
-          className="w-[180px] justify-between"
+          className="w-50 justify-between"
           aria-expanded={open}
+          aria-controls="radix-:R1arbdj9:"
         >
           {currentSortingType
             ? SORTING_TYPE.find((type) => type.value === currentSortingType)

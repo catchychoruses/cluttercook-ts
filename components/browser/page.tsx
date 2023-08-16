@@ -57,8 +57,8 @@ export default function Page({
   }
 
   return (
-    <ScrollArea className="h-[70vh] rounded-md p-4" hidden={hidden}>
-      <div className="grid grid-flow-row grid-cols-1">
+    <ScrollArea className=" h-[70vh] rounded-md" hidden={hidden}>
+      <div className=" mt-4 flex flex-col gap-4">
         {isLoading ? (
           <BrowserSkeleton />
         ) : error ? (
@@ -66,8 +66,9 @@ export default function Page({
         ) : (
           <AnimatePresence>
             {data?.recipes?.length ? (
-              data.recipes.map((recipe) => (
+              data.recipes.map((recipe, index) => (
                 <RecipeCard
+                  index={index}
                   key={recipe.id}
                   id={recipe.id}
                   title={recipe.title}

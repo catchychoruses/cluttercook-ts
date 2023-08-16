@@ -38,12 +38,12 @@ const MakerNavbar = ({ pathname }: { pathname: string }) => (
 export const RecipeMaker = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   return (
-    <div className="container mt-10 ">
+    <div className="mt-24 md:mt-12">
       {pathname === '/scrape' || pathname === '/create' ? (
         <MakerNavbar pathname={pathname} />
       ) : null}
 
-      <div className=" w-[70vw] rounded border">{children}</div>
+      <div className="rounded border p-4 md:w-[75vw]">{children}</div>
     </div>
   );
 };

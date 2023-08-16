@@ -1,30 +1,105 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { Github, Mail } from 'lucide-react';
 import { BuiltInProviderType } from 'next-auth/providers';
 import { ClientSafeProvider, signIn } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { ChangeEvent, useState } from 'react';
 import { LiteralUnion } from 'react-hook-form';
 
 export const Auth = ({
   providers,
+  token,
 }: {
   providers: Record<
     LiteralUnion<BuiltInProviderType, string>,
     ClientSafeProvider
   >;
-}) => (
-  <div className="mr-auto flex-col">
-    {Object.values(providers).map((provider) => (
-      <div className="m-8" key={provider.name}>
+  token: string | undefined;
+}) => {
+  const router = useRouter();
+
+  const [formValues, setFormValues] = useState({
+    email: '',
+    password: '',
+  });
+
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/profile';
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await signIn('credentials', {
+        redirect: false,
+        email: formValues.email,
+        password: formValues.password,
+        callbackUrl,
+      });
+
+      if (!res?.error) {
+        router.push(callbackUrl);
+      } else {
+        console.log('invalid email or password');
+      }
+    } catch (error: any) {}
+  };
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
+
+  return (
+    <div className="mr-auto flex-col p-8">
+      <div className="m-2" key={providers['github'].name}>
         <Button
-          className="flex h-16 w-80 gap-4 text-2xl font-semibold"
-          onClick={() => signIn(provider.id)}
+          className="w-62 flex h-16 text-xl font-semibold"
+          onClick={() => signIn(providers['github'].id)}
         >
-          {provider.name === 'GitHub' ? <Github /> : <Mail />}
-          Sign in with {provider.name}
+          {providers['github'].name === 'GitHub' ? <Github /> : <Mail />}
+          Sign in with {providers['github'].name}
         </Button>
       </div>
-    ))}
-  </div>
-);
+      <Separator className="mt-8" />
+      <div className=" m-auto flex w-full flex-col items-center p-4">
+        <h2 className="m-4 mb-2 text-xl font-semibold">Credentials signin: </h2>
+
+        <form onSubmit={onSubmit}>
+          <input name="crsfToken" hidden defaultValue={token} />
+          <div>
+            <Label className="text-md py-2" htmlFor="email">
+              Username:
+            </Label>
+            <Input
+              className="m-auto mb-4 h-10 w-60"
+              type="text"
+              name="email"
+              id="email"
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <Label className="text-md py-2" htmlFor="password">
+              Password:
+            </Label>
+            <Input
+              className="m-auto h-10 w-60"
+              type="password"
+              name="password"
+              id="password"
+              onChange={handleChange}
+            />
+          </div>
+          <Button type="submit" className="m-4 w-28 font-semibold">
+            Login
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+};

@@ -146,9 +146,9 @@ export const Composer = ({
   ) : (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-sm flex flex-col gap-y-1.5 p-6"
+      className=" flex flex-col gap-y-1.5 p-6 md:max-w-[35rem] lg:flex-wrap"
     >
-      <div className="mb-6">
+      <div className="mb-6 flex flex-col flex-wrap">
         <Label htmlFor="title">Title</Label>
         <Input
           id="title"

@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
 import { usePathname } from 'next/navigation';
+import { ThemeToggle } from './navbar/theme-toggle';
 
 const HamburgerIcon = () => (
   <div className="p-1/2">
@@ -38,7 +39,7 @@ export const HamburgerMenu = () => {
   return (
     <div
       className={cn('absolute left-1.5 ', {
-        ['hidden']: currentPath === '/auth',
+        hidden: currentPath === '/auth/signin',
       })}
     >
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -50,12 +51,12 @@ export const HamburgerMenu = () => {
             <HamburgerIcon />
           </Button>
         </SheetTrigger>
-        <SheetContent side={'left'}>
-          <div className="mt-4 max-w-[80%]">
+        <SheetContent side={'left'} className="flex flex-col ">
+          <div className="mt-4 flex h-full max-w-[80%] flex-col">
             {[
               { link: '/', display: 'Browse Recipes' },
               { link: '/scrape', display: 'New Recipe' },
-              { link: '/import-recipe', display: 'Import Recipe' },
+              { link: '/settings', display: 'Settings' },
             ].map(({ link, display }) => (
               <div key={link}>
                 <div onClick={() => setIsOpen(false)}>
@@ -64,6 +65,9 @@ export const HamburgerMenu = () => {
                 <Separator className="my-4" />
               </div>
             ))}
+          </div>
+          <div>
+            <ThemeToggle />
           </div>
         </SheetContent>
       </Sheet>

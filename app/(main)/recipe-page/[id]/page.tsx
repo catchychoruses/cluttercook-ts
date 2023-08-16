@@ -15,17 +15,13 @@ export default async function Page({ params }: { params: { id: string } }) {
   ).then((res) => res.json());
 
   return (
-    <div className="flex flex-col items-center justify-between">
+    <div className="container flex flex-col items-center p-2 pt-16 md:p-8">
       <PageWrapper>
-        <div className="container mt-10">
-          <div className="flex w-[70vw] flex-wrap justify-around rounded-md border p-8">
-            <div className="max-w-[49%] p-8">
-              <h1 className="text-[2rem] font-bold">{recipe.title}</h1>
-              <span>{recipe.description}</span>
-            </div>
-            <div className="flex h-fit max-w-[49%] justify-end">
+        <div className="mt-10 p-2">
+          <div className="flex flex-wrap justify-center rounded-md border p-4">
+            <div className="flex h-fit min-w-[30%] max-sm:max-w-[75%] md:w-[25%]">
               <Image
-                className="m-4 rounded border"
+                className="m-4 mx-auto rounded"
                 src={recipe.picture.url}
                 width={400}
                 height={400}
@@ -33,21 +29,42 @@ export default async function Page({ params }: { params: { id: string } }) {
                 priority
               />
             </div>
-            <div className="m-4 border p-4 pb-24">
-              <div className="p-4">
-                <h1 className="m-2 text-[2rem]">Ingredients</h1>
-                {recipe.ingredients.map((ingredient, index) => (
-                  <p key={index}>{`${index + 1}. ${ingredient.ingredient}`}</p>
-                ))}
-              </div>
-              <div className="p-4">
-                <h1 className="m-2 text-[2rem]">Instructions</h1>
-                {recipe.instructions.map((step, index) => (
-                  <p key={index}>{`${index + 1}. ${step.instruction}`}</p>
-                ))}
-              </div>
+            <div className="p-4 md:max-w-[70%] md:p-8">
+              <h1 className="py-2 text-2xl font-bold md:max-w-[75%] md:text-4xl">
+                {recipe.title}
+              </h1>
+              <span>{recipe.description}</span>
             </div>
-            <Actions id={params.id} />
+
+            <div className="m-4 flex flex-col justify-center pb-24">
+              <div className="my-4 rounded-md border p-4">
+                <h1 className="m-2 text-2xl font-semibold">Ingredients</h1>
+                <ul>
+                  {recipe.ingredients.map((ingredient, index) => (
+                    <li className="my-2 flex" key={index}>
+                      <span className="mx-2 font-semibold">{`${
+                        index + 1
+                      }.`}</span>
+                      {`${ingredient.ingredient}`}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="mt-4 rounded-md border p-4">
+                <h1 className="m-2 text-2xl font-semibold">Instructions</h1>
+                <ul>
+                  {recipe.instructions.map((step, index) => (
+                    <li className="my-2 flex" key={index}>
+                      <span className="mx-2 font-semibold">{`${
+                        index + 1
+                      }.`}</span>
+                      {`${step.instruction}`}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <Actions id={params.id} title={recipe.title} />
+            </div>
           </div>
         </div>
       </PageWrapper>
