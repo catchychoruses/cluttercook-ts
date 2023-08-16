@@ -24,8 +24,8 @@ export const Auth = ({
   token: string | undefined;
 }) => {
   const [formValues, setFormValues] = useState({
-    email: '',
-    password: '',
+    email: 'user@email.com',
+    password: '1234',
   });
   const { toast } = useToast();
   const router = useRouter();
@@ -83,6 +83,7 @@ export const Auth = ({
               name="email"
               id="email"
               onChange={handleChange}
+              defaultValue={'user@email.com'}
             />
           </div>
           <div>
@@ -95,6 +96,7 @@ export const Auth = ({
               name="password"
               id="password"
               onChange={handleChange}
+              defaultValue={'1234'}
             />
           </div>
           <Button type="submit" className="m-4 w-28 font-semibold">

@@ -1,5 +1,5 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Cluttercook Recipe Manager & Scraper
 
-## Getting Started
+Next.js 13 CRUD app for managing personal cooking recipes & scraping them from the web using the spoonacular API.
 
-soon
+built using Next.js 13 with /app directory, Prisma ORM, NextAuth and shadcn/ui component library.

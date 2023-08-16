@@ -42,7 +42,7 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        if (user?.name !== 'admin') {
+        if (user?.name !== 'user') {
           return null;
         }
 
