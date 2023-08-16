@@ -4,11 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/components/ui/use-toast';
 import { Github, Mail } from 'lucide-react';
+import { getServerSession } from 'next-auth';
 import { BuiltInProviderType } from 'next-auth/providers';
 import { ClientSafeProvider, signIn } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { ChangeEvent, useState } from 'react';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { LiteralUnion } from 'react-hook-form';
 
 export const Auth = ({
@@ -21,16 +23,15 @@ export const Auth = ({
   >;
   token: string | undefined;
 }) => {
-  const router = useRouter();
-
   const [formValues, setFormValues] = useState({
     email: '',
     password: '',
   });
+  const { toast } = useToast();
+  const router = useRouter();
 
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/profile';
-
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -42,7 +43,8 @@ export const Auth = ({
       });
 
       if (!res?.error) {
-        router.push(callbackUrl);
+        toast({ description: 'Logged in!' });
+        router.refresh();
       } else {
         console.log('invalid email or password');
       }

@@ -72,7 +72,10 @@ export const Composer = ({
     formState: { errors },
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialFormData || {},
+    defaultValues: initialFormData || {
+      instructions: [{ instruction: '' }],
+      ingredients: [{ ingredient: '' }],
+    },
   });
 
   const {

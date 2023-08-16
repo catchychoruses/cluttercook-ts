@@ -77,7 +77,7 @@ export const RecipeCard = ({
       exit={{ opacity: 0 }}
       className="m-auto flex h-40 w-[95%] justify-between gap-y-8 rounded-[6px] border md:h-[12.5rem]"
     >
-      <div className="h- 40 relative flex min-w-[9rem] md:h-[12.375rem] md:min-w-[12.5rem]">
+      <div className="relative flex min-w-[9rem] md:h-[12.375rem] md:min-w-[12.5rem]">
         <Image
           className="rounded-s-[5px] border-e object-cover"
           src={picture}

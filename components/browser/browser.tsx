@@ -61,13 +61,13 @@ export default function Browser() {
         <Page
           debouncedQuery={debouncedQuery}
           sortingType={localSortingType}
-          currentPage={currentPage + 1}
-          hidden={true}
+          currentPage={currentPage}
         />
         <Page
           debouncedQuery={debouncedQuery}
           sortingType={localSortingType}
-          currentPage={currentPage}
+          currentPage={currentPage + 1}
+          hidden={true}
         />
       </div>
       <div className="flex justify-center lg:hidden">

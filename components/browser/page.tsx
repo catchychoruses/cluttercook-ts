@@ -69,7 +69,7 @@ export default function Page({
               data.recipes.map((recipe, index) => (
                 <RecipeCard
                   index={index}
-                  key={recipe.id}
+                  key={index}
                   id={recipe.id}
                   title={recipe.title}
                   description={recipe.description}
