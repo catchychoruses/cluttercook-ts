@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useFieldArray, useForm } from 'react-hook-form';
 import Image from 'next/image';
-import { ChangeEvent, memo, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import placeholder from '../../../public/placeholder.jpg';

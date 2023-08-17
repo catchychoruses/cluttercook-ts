@@ -10,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { useRouter } from 'next/navigation';
 import { KeyedMutator } from 'swr';
 import {
   AlertDialog,
@@ -51,7 +50,6 @@ export const RecipeCard = ({
   mutate,
   index,
 }: CardProps) => {
-  const router = useRouter();
   const { toast } = useToast();
 
   const handleDelete = async () => {

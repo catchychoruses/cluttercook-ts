@@ -29,7 +29,6 @@ export default function Create({ url }: { url: string | undefined }) {
     }
   );
 
-
   return isValidating ? (
     <div className="flex justify-center p-10">
       <SpinnerCircular color="white" size="15rem" />

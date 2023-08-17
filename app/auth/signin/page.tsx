@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth';
-import { getCsrfToken, getProviders, signIn } from 'next-auth/react';
+import { getCsrfToken, getProviders } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 import { Auth } from './auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';

@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -8,7 +7,6 @@ import {
   AlertDialogHeader,
   AlertDialogTrigger,
 } from './ui/alert-dialog';
-import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import { useToast } from './ui/use-toast';
 

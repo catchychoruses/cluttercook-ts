@@ -1,9 +1,8 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
-import { Prisma, User } from '@prisma/client';
 import { UploadApiResponse } from 'cloudinary';
 import { getServerSession } from 'next-auth';
-import { ImageResponse, NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 type Recipe = {
   title: string;

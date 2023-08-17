@@ -4,8 +4,8 @@ import { User2Icon } from 'lucide-react';
 import React, { useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { signOut } from 'next-auth/react';
-import { redirect } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   name: string | null | undefined;
@@ -14,13 +14,18 @@ type Props = {
 };
 
 export default function UserInfo({ name, image, email }: Props) {
-  useEffect(() => {
-    if (!name) {
-      redirect('/');
-    }
-  });
+  const { status, data } = useSession();
+  const router = useRouter();
 
-  return (
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('auth/signin');
+    }
+  }, [status, router]);
+
+  return !data ? (
+    <p>Logging out...</p>
+  ) : (
     <>
       <h1 className="text-lg font-semibold">User Info</h1>
       {!image ? (

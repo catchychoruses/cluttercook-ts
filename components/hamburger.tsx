@@ -2,13 +2,7 @@
 
 import Link from 'next/link';
 import { Button } from './ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from './ui/sheet';
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { Separator } from './ui/separator';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';

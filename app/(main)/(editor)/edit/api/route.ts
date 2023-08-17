@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { UploadApiResponse } from 'cloudinary';
-import { ImageResponse, NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 type Recipe = {
   recipeId: string | null;
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   const recipeNewData: Recipe = await req.json();
 
   const imageRes: UploadApiResponse | undefined = await fetch(
-    'http://localhost:3000/api/upload-image',
+    `${process.env.BASE_URL}/api/upload-image`,
     {
       method: 'POST',
       body: JSON.stringify({

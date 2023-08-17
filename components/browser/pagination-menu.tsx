@@ -5,8 +5,6 @@ import {
   MoreHorizontal,
 } from 'lucide-react';
 import { PaginationRange } from './usePagination';
-import clsx from 'clsx';
-import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 type Props = {
@@ -34,7 +32,7 @@ export default function PaginationMenu({
     handlePageChange(currentPage - 1);
   };
 
-  let lastPage = paginationRange[paginationRange.length - 1];
+  const lastPage = paginationRange[paginationRange.length - 1];
 
   return (
     <div className={cn('mr-auto flex gap-2 max-md:mt-4', className)}>

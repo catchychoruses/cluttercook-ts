@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { AnalyzedInstructions, Recipe } from './types';
+import { Recipe } from './types';
 import { uploadImage } from '@/lib/cloudinary';
-import { UploadApiResponse } from 'cloudinary';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);

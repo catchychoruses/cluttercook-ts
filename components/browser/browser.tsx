@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { Search } from './search';
 import useSWR, { Fetcher } from 'swr';
 import { useDebounce } from 'use-debounce';
-import { Skeleton } from '../ui/skeleton';
 import PaginationMenu from './pagination-menu';
 import usePagination from './usePagination';
 import { SORTING_TYPES } from '@/lib/types';

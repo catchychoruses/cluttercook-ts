@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode } from 'react';
-import { usePathname } from 'next/navigation';
 
 export const PageWrapper = ({
   children,
