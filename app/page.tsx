@@ -11,7 +11,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="container flex flex-col items-center p-8 align-middle max-sm:p-16 lg:p-16">
+    <main className="container flex flex-col items-center p-8 align-middle max-sm:p-16 lg:px-16 lg:pb-0">
       <Browser />
     </main>
   );

@@ -16,6 +16,7 @@ export async function GET(req: Request) {
       description: true,
       ingredients: true,
       instructions: true,
+      url: true,
       picture: {
         select: {
           url: true,

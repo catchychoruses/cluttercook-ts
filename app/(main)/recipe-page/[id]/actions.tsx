@@ -8,12 +8,32 @@ import Link from 'next/link';
 
 export function Actions({ id, title }: { id: string; title: string }) {
   return (
-    <div className="m-auto flex flex-wrap">
+    <div className="m-auto mt-4 flex flex-wrap">
+      <div className="flex max-w-[49%] max-sm:flex-col">
+        <Link
+          className={cn(
+            buttonVariants({ variant: 'default', size: 'sm' }),
+            'm-2 p-6 text-center'
+          )}
+          href={'/'}
+        >
+          Download as PDF
+        </Link>
+        <Link
+          className={cn(
+            buttonVariants({ variant: 'default', size: 'sm' }),
+            'm-2 p-6 text-center'
+          )}
+          href={'/'}
+        >
+          Download as .MD
+        </Link>
+      </div>
       <div className=" flex max-w-[49%] max-sm:flex-col">
         <Link
           className={cn(
             buttonVariants({ variant: 'default', size: 'sm' }),
-            'm-4 p-6 text-center'
+            'm-2 p-6 text-center'
           )}
           href={`/edit?recipeId=${id}`}
         >
@@ -24,32 +44,12 @@ export function Actions({ id, title }: { id: string; title: string }) {
             id={id}
             title={title}
             triggerElement={
-              <Button size="sm" className="m-4 p-6">
+              <Button size="sm" className="m-2 p-6 text-destructive">
                 Delete Recipe
               </Button>
             }
           />
         </AlertDialog>
-      </div>
-      <div className="flex max-w-[49%] max-sm:flex-col">
-        <Link
-          className={cn(
-            buttonVariants({ variant: 'default', size: 'sm' }),
-            'm-4 p-6 text-center'
-          )}
-          href={'/'}
-        >
-          Download as PDF
-        </Link>
-        <Link
-          className={cn(
-            buttonVariants({ variant: 'default', size: 'sm' }),
-            'm-4 p-6 text-center'
-          )}
-          href={'/'}
-        >
-          Download as .MD
-        </Link>
       </div>
     </div>
   );

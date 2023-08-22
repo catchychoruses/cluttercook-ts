@@ -23,7 +23,7 @@ export const Scraper = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      url: 'https://based.cooking/tofu-and-cashew-chow-mein/',
+      url: 'https://joyfoodsunshine.com/the-most-amazing-chocolate-chip-cookies/',
     },
   });
 
@@ -41,7 +41,7 @@ export const Scraper = () => {
           control={form.control}
           name="url"
           render={({ field }) => (
-            <FormItem className="w-[20rem]">
+            <FormItem className="max-w-[30rem]">
               <FormLabel>URL</FormLabel>
               <FormControl>
                 <Input placeholder="Recipe URL" {...field} />

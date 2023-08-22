@@ -57,7 +57,7 @@ export default function Page({
   }
 
   return (
-    <ScrollArea className=" h-[70vh] rounded-md" hidden={hidden}>
+    <ScrollArea className=" h-[75vh] rounded-md" hidden={hidden}>
       <div className=" mt-4 flex flex-col gap-4">
         {isLoading ? (
           <BrowserSkeleton />

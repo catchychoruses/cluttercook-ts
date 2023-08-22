@@ -5,6 +5,7 @@ import { Actions } from './actions';
 export default async function Page({ params }: { params: { id: string } }) {
   const recipe: {
     title: string;
+    url?: string;
     createdAt: Date;
     description: string;
     ingredients: { ingredient: string }[];
@@ -13,6 +14,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   } = await fetch(
     `${process.env.BASE_URL}/api/get-recipe?recipeId=${params.id}`
   ).then((res) => res.json());
+
+  const date = new Date(recipe.createdAt).toLocaleString();
 
   return (
     <div className="container flex flex-col items-center p-2 pt-16 md:p-8">
@@ -33,7 +36,15 @@ export default async function Page({ params }: { params: { id: string } }) {
               <h1 className="py-2 text-2xl font-bold md:max-w-[75%] md:text-4xl">
                 {recipe.title}
               </h1>
-              <span>{recipe.description}</span>
+              <>
+                <p className="line-clamp-1 max-h-6 pb-2 text-sm opacity-50">
+                  Created: {date}
+                </p>
+              </>
+            </div>
+
+            <div className="mr-auto p-4 md:py-2">
+              <p className="justify-start text-lg">{recipe.description}</p>
             </div>
 
             <div className="m-4 flex flex-col justify-center pb-24">
@@ -63,6 +74,14 @@ export default async function Page({ params }: { params: { id: string } }) {
                   ))}
                 </ul>
               </div>
+              {recipe.url && (
+                <div className="p-4">
+                  <p className="text-sm opacity-50">Scraped from:</p>
+                  <p className="line-clamp-1 max-h-6 pb-2 text-sm opacity-50">
+                    {recipe.url}
+                  </p>
+                </div>
+              )}
               <Actions id={params.id} title={recipe.title} />
             </div>
           </div>

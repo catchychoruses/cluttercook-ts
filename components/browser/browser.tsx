@@ -56,7 +56,7 @@ export default function Browser() {
           setCurrentSortingType={setLocalSortingType}
         />
       </div>
-      <div className="flex flex-col rounded-md border max-md:h-[65vh]">
+      <div className="flex flex-col rounded-md border max-md:h-[68.5vh]">
         <Page
           debouncedQuery={debouncedQuery}
           sortingType={localSortingType}

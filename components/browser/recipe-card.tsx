@@ -73,7 +73,7 @@ export const RecipeCard = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="m-auto flex h-40 w-[95%] justify-between gap-y-8 rounded-[6px] border md:h-[12.5rem]"
+      className=" m-auto flex h-32 w-[95%] justify-between gap-y-8 rounded-[6px] border md:h-[12.5rem]"
     >
       <div className="relative flex min-w-[9rem] md:h-[12.375rem] md:min-w-[12.5rem]">
         <Image
@@ -85,7 +85,7 @@ export const RecipeCard = ({
         />
       </div>
 
-      <div className="m-2 ml-3 flex flex-col justify-between gap-2 md:p-4 lg:w-[36rem]">
+      <div className="m-2 ml-3 flex w-full flex-col justify-around gap-2 md:p-4">
         <h1 className="font-semibold md:text-2xl">{title}</h1>
         <p className=" line-clamp-2 max-md:hidden">{description}</p>
         <Link
@@ -109,6 +109,25 @@ export const RecipeCard = ({
                   Delete
                 </DropdownMenuItem>
               </AlertDialogTrigger>
+              <DropdownMenuItem>
+                <Link href={`/edit?recipeId=${id}`}>Edit Recipe</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link
+                  href={`/edit?recipeId=${id}`}
+                  className="pointer-events-none"
+                >
+                  Download as PDF
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link
+                  href={`/edit?recipeId=${id}`}
+                  className="pointer-events-none"
+                >
+                  Download as .MD
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <AlertDialogContent>
