@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { Recipe } from './types';
 import { uploadImage } from '@/lib/cloudinary';
+import { UploadApiResponse } from 'cloudinary';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const url = searchParams.get('url');
+  const scrapeImage = searchParams.get('scrapeImage');
 
   const params = new URLSearchParams({
     apiKey: process.env.SCRAPER_SECRET,
@@ -21,7 +23,15 @@ export async function GET(req: Request) {
       }
     ).then((res) => res.json());
 
-    const scrapedImg = await uploadImage(res.image, { overwrite: true });
+    let scrapedImg: UploadApiResponse | undefined | null = null;
+
+    if (scrapeImage === 'true') {
+      scrapedImg = await uploadImage(res.image, {
+        overwrite: true,
+        tags: ['temp'],
+      });
+    }
+
     const data: {
       title: string;
       tags?: string[];
@@ -50,6 +60,8 @@ export async function GET(req: Request) {
       },
       url: res.sourceUrl,
     };
+
+    data;
 
     return NextResponse.json(data);
   } catch (err) {

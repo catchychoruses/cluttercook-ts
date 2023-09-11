@@ -11,8 +11,8 @@ type Recipe = {
   ingredients: string[];
   instructions: string[];
   picture: {
-    base64Picture: string | null;
-    scrapedUrl?: string;
+    imageURL: string | null;
+    scrapedURL?: string;
     publicId?: string;
   };
 };
@@ -25,13 +25,13 @@ export async function POST(req: NextRequest) {
       'https://res.cloudinary.com/ddfxnnmki/image/upload/v1691507606/Artboard_6_ncypek.jpg',
     publicId: 'Artboard_6_ncypekm',
   };
-  if (recipeRes.picture.base64Picture) {
+  if (recipeRes.picture.imageURL) {
     const res: UploadApiResponse | undefined = await fetch(
       `${process.env.BASE_URL}/api/upload-image`,
       {
         method: 'POST',
         body: JSON.stringify({
-          base64Picture: recipeRes.picture.base64Picture,
+          image: recipeRes.picture.imageURL,
         }),
         headers: { 'Content-type': 'application/json' },
       }

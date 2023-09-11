@@ -18,9 +18,15 @@ const fetcher: Fetcher<
   string
 > = (url) => fetch(url).then((res) => res.json());
 
-export default function Create({ url }: { url: string | undefined }) {
+export default function Create({
+  url,
+  scrapeImage,
+}: {
+  url: string | undefined;
+  scrapeImage: boolean | undefined;
+}) {
   const { data, isLoading, isValidating } = useSWR(
-    url ? `scrape/api/?url=${url}` : null,
+    url ? `scrape/api/?url=${url}&scrapeImage=${scrapeImage}` : null,
     fetcher,
     {
       revalidateOnFocus: false,

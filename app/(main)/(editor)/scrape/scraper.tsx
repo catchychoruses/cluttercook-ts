@@ -13,9 +13,11 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const formSchema = z.object({
   url: z.string(),
+  scrapeImage: z.boolean().default(true),
 });
 
 export const Scraper = () => {
@@ -24,11 +26,18 @@ export const Scraper = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       url: 'https://joyfoodsunshine.com/the-most-amazing-chocolate-chip-cookies/',
+      scrapeImage: true,
     },
   });
 
-  const onSubmit: SubmitHandler<{ url: string }> = (data) => {
-    router.push(`/create?url=${encodeURIComponent(data.url)}`);
+  const onSubmit: SubmitHandler<{ url: string; scrapeImage: boolean }> = (
+    data
+  ) => {
+    router.push(
+      `/create?url=${encodeURIComponent(data.url)}&scrapeImage=${
+        data.scrapeImage
+      }`
+    );
   };
 
   return (
@@ -46,6 +55,22 @@ export const Scraper = () => {
               <FormControl>
                 <Input placeholder="Recipe URL" {...field} />
               </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="scrapeImage"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Checkbox
+                  className="mx-2"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <FormLabel>Scrape Recipe Image</FormLabel>
             </FormItem>
           )}
         />

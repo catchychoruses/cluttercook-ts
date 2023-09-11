@@ -9,6 +9,7 @@ import AuthContext from './api/auth/AuthContext';
 import { HamburgerMenu } from '@/components/hamburger';
 import Navbar from '@/components/navbar/navbar';
 import { authOptions } from './api/auth/[...nextauth]/route';
+import { Analytics } from '@vercel/analytics/react';
 
 const workSans = Work_Sans({ subsets: ['latin'] });
 
@@ -45,6 +46,7 @@ export default async function RootLayout({
 
             <Navbar />
             {children}
+            <Analytics />
           </ThemeProvider>
 
           <Toaster />

@@ -2,14 +2,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useFieldArray, useForm } from 'react-hook-form';
 import Image from 'next/image';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useRef, useState } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import placeholder from '../../../public/placeholder.jpg';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
-import { toBase64 } from '@/lib/utils';
 import { X } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
@@ -31,6 +30,9 @@ const formSchema = z.object({
     })
     .array(),
 });
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+const MAX_FILE_SIZE = 1000000;
 
 type ComposerProps = {
   recipeId?: string | null;
@@ -60,9 +62,13 @@ export const Composer = ({
   const { toast } = useToast();
   const router = useRouter();
 
+  const hiddenFileInput = useRef<HTMLInputElement>(null);
+
   const [previewImage, setPreviewImage] = useState(
     initialFormData?.picture?.url
   );
+
+  const [fileUploadError, setFileUploadError] = useState<string | null>(null);
 
   const {
     control,
@@ -96,11 +102,29 @@ export const Composer = ({
     name: 'instructions',
   });
 
-  const handleImageInput = useCallback(
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (hiddenFileInput.current) {
+      hiddenFileInput.current.click();
+    }
+  };
+
+  const handleImageUpload = useCallback(
     async (input: ChangeEvent<HTMLInputElement>) => {
       if (input.currentTarget.files) {
-        const base64 = await toBase64(input.currentTarget.files[0]);
-        setPreviewImage(base64 as string);
+        const selectedFile = input.currentTarget.files[0];
+
+        if (ALLOWED_IMAGE_TYPES.includes(selectedFile.type)) {
+          if (selectedFile.size <= MAX_FILE_SIZE) {
+            setPreviewImage(URL.createObjectURL(selectedFile));
+            setFileUploadError(null);
+          } else {
+
+            setFileUploadError('Max file size is 1MB.');
+          }
+        } else {
+          setFileUploadError('Allowed image types: JPG, PNG, GIF');
+        }
       }
     },
     []
@@ -319,9 +343,22 @@ export const Composer = ({
           height={200}
           alt="placeholder"
         />
-        <Input className="w-fit" type="file" onChange={handleImageInput} />
+        <Input
+          ref={hiddenFileInput}
+          onChange={handleImageUpload}
+          className="hidden"
+          type="file"
+        />
+        <Button className="w-fit" type="button" onClick={handleClick}>
+          Upload Image
+        </Button>
+        {fileUploadError && (
+          <Label className="p-2 text-destructive decoration-destructive">
+            {fileUploadError}
+          </Label>
+        )}
       </div>
-      <Button className=" ml-auto  w-fit" type="submit">
+      <Button className="ml-auto  w-fit" type="submit">
         Save Recipe
       </Button>
     </form>

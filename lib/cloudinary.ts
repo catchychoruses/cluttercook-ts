@@ -34,13 +34,13 @@ cloudinary.v2.config({
 });
 
 export function uploadImage(
-  imageUploaded: string,
+  image: string,
   options?: cloudinary.UploadApiOptions
 ) {
   const res = new Promise<cloudinary.UploadApiResponse | undefined>(
     (resolve, reject) => {
       cloudinary.v2.uploader.upload(
-        imageUploaded,
+        image,
         { width: 300, height: 300, crop: 'fill', ...options },
         (err, res) => {
           if (err) reject(err);
