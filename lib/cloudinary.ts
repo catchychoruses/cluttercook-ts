@@ -37,12 +37,10 @@ export async function uploadImage(
   image: string,
   options?: cloudinary.UploadApiOptions
 ) {
-  const imageRes: Response = await fetch(image);
-  const blob: Blob = await imageRes.blob();
   const res = new Promise<cloudinary.UploadApiResponse | undefined>(
     (resolve, reject) => {
       cloudinary.v2.uploader.upload(
-        blob.toString(),
+        image,
         { width: 300, height: 300, crop: 'scale', ...options },
         (err, res) => {
           if (err) reject(err);
