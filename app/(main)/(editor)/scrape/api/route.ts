@@ -54,7 +54,7 @@ export async function GET(req: Request) {
             : [{ instruction: '' }]
           : [{ instruction: '' }],
         picture: {
-          isScraped: true,
+          origin: 'scraped',
           scrapedURL: scrapedImg?.secure_url,
           publicId: scrapedImg?.public_id,
         },

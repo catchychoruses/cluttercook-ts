@@ -11,10 +11,10 @@ export async function POST(req: Request) {
 
   try {
     const res = await uploadImage(image, {
-      overwrite: true,
-      invalidate: true,
       public_id: publicId,
     });
+
+    console.log(res);
     return NextResponse.json(res);
   } catch {
     return NextResponse.error;

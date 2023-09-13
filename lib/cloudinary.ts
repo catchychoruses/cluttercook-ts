@@ -33,15 +33,16 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export function uploadImage(
+export async function uploadImage(
   image: string,
   options?: cloudinary.UploadApiOptions
 ) {
-  console.log(image);
+  const imageRes: Response = await fetch(image);
+  const blob: Blob = await imageRes.blob();
   const res = new Promise<cloudinary.UploadApiResponse | undefined>(
     (resolve, reject) => {
       cloudinary.v2.uploader.upload(
-        image,
+        blob.toString(),
         { width: 300, height: 300, crop: 'scale', ...options },
         (err, res) => {
           if (err) reject(err);
