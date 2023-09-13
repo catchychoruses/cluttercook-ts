@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { Recipe } from './types';
 import { uploadImage } from '@/lib/cloudinary';
 import { UploadApiResponse } from 'cloudinary';
+import { ScrapedPictureData } from '../../types';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -32,38 +33,36 @@ export async function GET(req: Request) {
       });
     }
 
-    const data: {
-      title: string;
-      tags?: string[];
-      ingredients: { ingredient: string }[];
-      instructions: { instruction: string }[];
-      picture: {
-        url: string | null;
-        scrapedPublicId: string | undefined;
+    if (scrapedImg) {
+      const data: {
+        title: string;
+        tags?: string[];
+        ingredients: { ingredient: string }[];
+        instructions: { instruction: string }[];
+        picture: ScrapedPictureData;
+        url: string;
+      } = {
+        title: res.title,
+        ingredients: res.extendedIngredients?.map(({ original }) => ({
+          ingredient: original,
+        })) || [{ ingredient: '' }],
+        instructions: res.analyzedInstructions
+          ? res.analyzedInstructions[0].steps
+            ? res.analyzedInstructions[0].steps?.map(({ step }) => ({
+                instruction: step,
+              }))
+            : [{ instruction: '' }]
+          : [{ instruction: '' }],
+        picture: {
+          isScraped: true,
+          scrapedURL: scrapedImg?.secure_url,
+          publicId: scrapedImg?.public_id,
+        },
+        url: res.sourceUrl,
       };
-      url: string;
-    } = {
-      title: res.title,
-      ingredients: res.extendedIngredients?.map(({ original }) => ({
-        ingredient: original,
-      })) || [{ ingredient: '' }],
-      instructions: res.analyzedInstructions
-        ? res.analyzedInstructions[0].steps
-          ? res.analyzedInstructions[0].steps?.map(({ step }) => ({
-              instruction: step,
-            }))
-          : [{ instruction: '' }]
-        : [{ instruction: '' }],
-      picture: {
-        url: scrapedImg?.secure_url || null,
-        scrapedPublicId: scrapedImg?.public_id,
-      },
-      url: res.sourceUrl,
-    };
 
-    data;
-
-    return NextResponse.json(data);
+      return NextResponse.json(data);
+    }
   } catch (err) {
     return NextResponse.json(err);
   }

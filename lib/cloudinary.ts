@@ -1,6 +1,6 @@
 import * as cloudinary from 'cloudinary';
 
-export interface Resource {
+export interface CloudinaryApiResponse {
   asset_id: string;
   public_id: string;
   folder: string;
@@ -37,11 +37,12 @@ export function uploadImage(
   image: string,
   options?: cloudinary.UploadApiOptions
 ) {
+  console.log(image);
   const res = new Promise<cloudinary.UploadApiResponse | undefined>(
     (resolve, reject) => {
       cloudinary.v2.uploader.upload(
         image,
-        { width: 300, height: 300, crop: 'fill', ...options },
+        { width: 300, height: 300, crop: 'scale', ...options },
         (err, res) => {
           if (err) reject(err);
           resolve(res);

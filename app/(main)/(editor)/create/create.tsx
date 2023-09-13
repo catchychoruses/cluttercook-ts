@@ -4,16 +4,14 @@ import React from 'react';
 import useSWR, { Fetcher } from 'swr';
 import { Composer } from '../composer';
 import { SpinnerCircular } from 'spinners-react';
+import { ScrapedPictureData } from '../types';
 
 const fetcher: Fetcher<
   {
     title: string;
     ingredients: { ingredient: string }[];
     instructions: { instruction: string }[];
-    picture: {
-      url: string;
-      publicId: string;
-    };
+    picture: ScrapedPictureData;
   },
   string
 > = (url) => fetch(url).then((res) => res.json());

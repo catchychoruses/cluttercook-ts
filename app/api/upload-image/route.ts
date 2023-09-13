@@ -1,13 +1,22 @@
 import { uploadImage } from '@/lib/cloudinary';
 import { NextResponse } from 'next/server';
 
-export async function POST(req: Request) {
-  const { image, publicId }: { image: string; publicId?: string } =
-    await req.json();
-  const res = await uploadImage(image, {
-    overwrite: true,
-    public_id: publicId,
-  });
+interface RequestQueryParams {
+  image: string;
+  publicId?: string;
+}
 
-  return NextResponse.json(res);
+export async function POST(req: Request) {
+  const { image, publicId }: RequestQueryParams = await req.json();
+
+  try {
+    const res = await uploadImage(image, {
+      overwrite: true,
+      invalidate: true,
+      public_id: publicId,
+    });
+    return NextResponse.json(res);
+  } catch {
+    return NextResponse.error;
+  }
 }

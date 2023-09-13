@@ -1,53 +1,52 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
-import { UploadApiResponse } from 'cloudinary';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
-
-type Recipe = {
-  title: string;
-  tags: string;
-  description: string;
-  ingredients: string[];
-  instructions: string[];
-  picture: {
-    imageURL: string | null;
-    scrapedURL?: string;
-    publicId?: string;
-  };
-};
+import { CreateRecipeRequest } from '../../types';
+import { UploadApiResponse } from 'cloudinary';
 
 export async function POST(req: NextRequest) {
-  const recipeRes: Recipe = await req.json();
-
-  const imageRes = {
-    secureUrl:
+  const recipeRes: CreateRecipeRequest = await req.json();
+  let imageRes = {
+    secureURL:
       'https://res.cloudinary.com/ddfxnnmki/image/upload/v1691507606/Artboard_6_ncypek.jpg',
-    publicId: 'Artboard_6_ncypekm',
+    publicId: 'Placeholder',
   };
-  if (recipeRes.picture.imageURL) {
-    const res: UploadApiResponse | undefined = await fetch(
-      `${process.env.BASE_URL}/api/upload-image`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          image: recipeRes.picture.imageURL,
-        }),
-        headers: { 'Content-type': 'application/json' },
-      }
-    ).then((data) => data.json());
 
-    if (res) {
-      imageRes.secureUrl = res?.secure_url;
-      imageRes.publicId = res?.public_id;
+  if (recipeRes.picture) {
+    if (recipeRes.picture.isScraped) {
+      imageRes = {
+        secureURL: recipeRes.picture.scrapedURL,
+        publicId: recipeRes.picture.publicId,
+      };
+    }
+    if (!recipeRes.picture.isScraped && recipeRes.picture.base64Picture) {
+      const res: UploadApiResponse | undefined = await fetch(
+        `${process.env.BASE_URL}/api/upload-image`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            image: recipeRes.picture.base64Picture,
+          }),
+          headers: { 'Content-type': 'application/json' },
+        }
+      ).then((res) => res.json());
+
+      if (res) {
+        imageRes = {
+          secureURL: res.secure_url,
+          publicId: res.public_id,
+        };
+      }
     }
   }
-
   const session = await getServerSession(authOptions);
+
+  console.log(imageRes);
 
   try {
     if (imageRes && session?.user?.email) {
-      const update = await prisma.user.update({
+      await prisma.user.update({
         where: { email: session?.user?.email },
         data: {
           recipes: {
@@ -57,7 +56,7 @@ export async function POST(req: NextRequest) {
                 tags: recipeRes.tags.split(' '),
                 picture: {
                   create: {
-                    url: imageRes.secureUrl,
+                    url: imageRes.secureURL,
                     publicId: imageRes.publicId,
                   },
                 },
@@ -66,11 +65,12 @@ export async function POST(req: NextRequest) {
           },
         },
       });
+
       await fetch(
-        `${process.env.BASE_URL}/api/upload-image?publicId=${recipeRes.picture.publicId}`,
+        `${process.env.BASE_URL}/api/delete-image?publicId=${imageRes.publicId}`,
         { method: 'DELETE' }
       );
-      return NextResponse.json(update);
+      return NextResponse.json('OK');
     }
   } catch (err) {
     return NextResponse.error();

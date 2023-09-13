@@ -14,6 +14,11 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SpinnerCircular } from 'spinners-react';
+import { ComposeRecipeRequest, ComposerProps } from './types';
+import { toBase64 } from '@/lib/utils';
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+const MAX_FILE_SIZE = 1000000;
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Please provide a title' }),
@@ -31,28 +36,6 @@ const formSchema = z.object({
     .array(),
 });
 
-const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
-const MAX_FILE_SIZE = 1000000;
-
-type ComposerProps = {
-  recipeId?: string | null;
-  initialFormData:
-    | {
-        title: string;
-        tags?: string;
-        description?: string;
-        ingredients: { ingredient: string }[];
-        instructions: { instruction: string }[];
-        picture: {
-          url?: string | null;
-          publicId?: string;
-        };
-      }
-    | undefined;
-  isLoading: boolean;
-  isEditMode?: boolean;
-};
-
 export const Composer = ({
   initialFormData,
   isLoading,
@@ -64,8 +47,13 @@ export const Composer = ({
 
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
-  const [previewImage, setPreviewImage] = useState(
-    initialFormData?.picture?.url
+  const [previewPicture, setPreviewPicture] = useState(
+    initialFormData?.picture?.isScraped
+      ? initialFormData?.picture?.scrapedURL
+      : null
+  );
+  const [isPictureScraped, setIsPictureScraped] = useState(
+    initialFormData?.picture?.isScraped
   );
 
   const [fileUploadError, setFileUploadError] = useState<string | null>(null);
@@ -116,10 +104,11 @@ export const Composer = ({
 
         if (ALLOWED_IMAGE_TYPES.includes(selectedFile.type)) {
           if (selectedFile.size <= MAX_FILE_SIZE) {
-            setPreviewImage(URL.createObjectURL(selectedFile));
+            const base64Picture = await toBase64(selectedFile);
+            setPreviewPicture(base64Picture as string);
             setFileUploadError(null);
+            setIsPictureScraped(false);
           } else {
-
             setFileUploadError('Max file size is 1MB.');
           }
         } else {
@@ -133,22 +122,29 @@ export const Composer = ({
   const onSubmit = async () => {
     const values = getValues();
     try {
+      console.log(initialFormData?.picture);
+
+      const recipeRequestBody: ComposeRecipeRequest = {
+        ...values,
+        ingredients: values.ingredients.map(
+          (ingredient) => ingredient.ingredient
+        ),
+        instructions: values.instructions.map(
+          (instruction) => instruction.instruction
+        ),
+        recipeId: recipeId,
+        picture:
+          initialFormData?.picture?.isScraped && isPictureScraped
+            ? {
+                isScraped: true,
+                scrapedURL: initialFormData?.picture?.scrapedURL,
+                publicId: initialFormData?.picture?.publicId,
+              }
+            : { isScraped: false, base64Picture: previewPicture },
+      };
+
       await fetch(isEditMode ? 'edit/api' : 'create/api', {
-        body: JSON.stringify({
-          ...values,
-          ingredients: values.ingredients.map(
-            (ingredient) => ingredient.ingredient
-          ),
-          instructions: values.instructions.map(
-            (instruction) => instruction.instruction
-          ),
-          recipeId: recipeId,
-          picture: {
-            base64Picture: previewImage || null,
-            scrapedUrl: initialFormData?.picture?.url,
-            publicId: initialFormData?.picture?.publicId,
-          },
-        }),
+        body: JSON.stringify(recipeRequestBody),
         method: 'POST',
         headers: { 'Content-type': 'application/json' },
       }).then((res) => res.json());
@@ -338,7 +334,7 @@ export const Composer = ({
       <div className=" mx-auto flex w-full flex-col items-center p-4">
         <Image
           className="m-4 w-52 rounded border"
-          src={previewImage || placeholder.src}
+          src={previewPicture || placeholder.src}
           width={200}
           height={200}
           alt="placeholder"
