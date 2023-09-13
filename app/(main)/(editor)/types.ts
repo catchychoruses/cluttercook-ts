@@ -13,23 +13,16 @@ export interface CreateRecipeRequest {
 
 export type CreateResponsePictureData =
   | ScrapedPictureData
-  | UploadedPictureData
-  | DbPictureData;
-
-export interface DbPictureData {
-  origin: 'db';
-  publicId: string;
-  url: string;
-}
+  | UploadedPictureData;
 
 export interface ScrapedPictureData {
-  origin: 'scraped';
+  isScraped: true;
   scrapedURL: string;
   publicId: string;
 }
 
 interface UploadedPictureData {
-  origin: 'uploaded';
+  isScraped: false;
   base64Picture: string | null;
 }
 

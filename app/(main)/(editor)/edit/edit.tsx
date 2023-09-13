@@ -4,7 +4,6 @@ import React from 'react';
 import { Composer } from '../composer';
 import useSWR, { Fetcher } from 'swr';
 import { useSearchParams } from 'next/navigation';
-import { DbPictureData } from '../types';
 
 const fetcher: Fetcher<
   {
@@ -14,7 +13,10 @@ const fetcher: Fetcher<
     description: string;
     ingredients: { ingredient: string }[];
     instructions: { instruction: string }[];
-    picture: DbPictureData;
+    picture: {
+      url: string;
+      publicId: string;
+    };
   },
   string
 > = (url) => fetch(url).then((res) => res.json());
