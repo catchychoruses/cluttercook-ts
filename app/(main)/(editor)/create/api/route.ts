@@ -14,13 +14,16 @@ export async function POST(req: NextRequest) {
   };
 
   if (recipeRes.picture) {
-    if (recipeRes.picture.isScraped) {
+    if (recipeRes.picture.origin === 'scraped') {
       imageRes = {
         secureURL: recipeRes.picture.scrapedURL,
         publicId: recipeRes.picture.publicId,
       };
     }
-    if (!recipeRes.picture.isScraped && recipeRes.picture.base64Picture) {
+    if (
+      recipeRes.picture.origin === 'uploaded' &&
+      recipeRes.picture.base64Picture
+    ) {
       const res: UploadApiResponse | undefined = await fetch(
         `${process.env.BASE_URL}/api/upload-image`,
         {

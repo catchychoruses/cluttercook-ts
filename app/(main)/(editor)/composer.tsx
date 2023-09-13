@@ -48,12 +48,12 @@ export const Composer = ({
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
   const [previewPicture, setPreviewPicture] = useState(
-    initialFormData?.picture?.isScraped
+    initialFormData?.picture?.origin === 'scraped'
       ? initialFormData?.picture?.scrapedURL
       : null
   );
   const [isPictureScraped, setIsPictureScraped] = useState(
-    initialFormData?.picture?.isScraped
+    initialFormData?.picture?.origin === 'scraped'
   );
 
   const [fileUploadError, setFileUploadError] = useState<string | null>(null);
@@ -134,13 +134,13 @@ export const Composer = ({
         ),
         recipeId: recipeId,
         picture:
-          initialFormData?.picture?.isScraped && isPictureScraped
+          initialFormData?.picture?.origin === 'scraped' && isPictureScraped
             ? {
-                isScraped: true,
+                origin: 'scraped',
                 scrapedURL: initialFormData?.picture?.scrapedURL,
                 publicId: initialFormData?.picture?.publicId,
               }
-            : { isScraped: false, base64Picture: previewPicture },
+            : { origin: 'uploaded', base64Picture: previewPicture },
       };
 
       await fetch(isEditMode ? 'edit/api' : 'create/api', {
