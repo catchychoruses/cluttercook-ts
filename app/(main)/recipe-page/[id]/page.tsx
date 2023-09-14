@@ -1,6 +1,7 @@
 import { PageWrapper } from '@/components/page-wrapper';
 import Image from 'next/image';
 import { Actions } from './actions';
+import { placeholder } from '@/lib/hooks/useImageUpload';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const recipe: {
@@ -10,7 +11,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     description: string;
     ingredients: { ingredient: string }[];
     instructions: { instruction: string }[];
-    image: { URL: string };
+    image: { URL?: string };
   } = await fetch(
     `${process.env.BASE_URL}/api/get-recipe?recipeId=${params.id}`
   ).then((res) => res.json());
@@ -25,7 +26,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             <div className="flex h-fit min-w-[30%] max-sm:max-w-[75%] md:w-[25%]">
               <Image
                 className="m-4 mx-auto rounded"
-                src={recipe.image.URL}
+                src={recipe.image.URL ?? placeholder.URL}
                 width={400}
                 height={400}
                 alt="placeholder"

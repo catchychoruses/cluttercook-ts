@@ -33,11 +33,11 @@ export const Scraper = () => {
   const onSubmit: SubmitHandler<{ url: string; scrapeImage: boolean }> = (
     data
   ) => {
-    router.push(
-      `/create?url=${encodeURIComponent(data.url)}&scrapeImage=${
-        data.scrapeImage
-      }`
-    );
+    const params = new URLSearchParams({
+      url: data.url,
+      scrapeImage: data.scrapeImage ? 'true' : 'false',
+    });
+    router.push(`/create?${params}`);
   };
 
   return (

@@ -1,3 +1,5 @@
+'use client';
+
 import { CreateResponsePictureData } from '@/app/(main)/(editor)/types';
 import { UploadApiResponse } from 'cloudinary';
 import { toBase64 } from '@/lib/utils';
@@ -6,7 +8,7 @@ import { ChangeEvent, useCallback, useRef, useState } from 'react';
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 const MAX_FILE_SIZE = 1000000;
 
-const placeholder = {
+export const placeholder = {
   URL: 'https://res.cloudinary.com/ddfxnnmki/image/upload/v1691507606/Artboard_6_ncypek.jpg',
   publicId: 'Placeholder',
 };

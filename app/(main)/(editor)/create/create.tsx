@@ -22,7 +22,7 @@ export default function Create({
   scrapeImage,
 }: {
   url: string | undefined;
-  scrapeImage: boolean | undefined;
+  scrapeImage: string | undefined;
 }) {
   const { data, isValidating } = useSWR(
     url ? `scrape/api/?url=${url}&scrapeImage=${scrapeImage}` : null,
@@ -35,7 +35,7 @@ export default function Create({
   );
 
   return isValidating ? (
-    <div className="flex justify-center p-10">
+    <div className="flex justify-center">
       <SpinnerCircular color="white" size="15rem" />
     </div>
   ) : (

@@ -47,11 +47,7 @@ export default function PaginationMenu({
 
       {paginationRange.map((pageNumber, index) => {
         if (pageNumber === 'DOTS') {
-          return (
-            <Button key={index} variant="outline" size="icon">
-              <MoreHorizontal />
-            </Button>
-          );
+          return <MoreHorizontal className="mx-1 mt-4" />;
         }
         return (
           <Button

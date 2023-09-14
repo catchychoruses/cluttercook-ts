@@ -26,41 +26,41 @@ export async function GET(req: Request) {
 
     let scrapedImg: UploadApiResponse | undefined | null = null;
 
+    console.log(scrapeImage);
     if (scrapeImage === 'true') {
       scrapedImg = await uploadImage(res.image, {
         overwrite: true,
       });
     }
 
-    if (scrapedImg) {
-      const data: {
-        title: string;
-        tags?: string[];
-        ingredients: { ingredient: string }[];
-        instructions: { instruction: string }[];
-        image: CreateResponsePictureData;
-        URL: string;
-      } = {
-        title: res.title,
-        ingredients: res.extendedIngredients?.map(({ original }) => ({
-          ingredient: original,
-        })) || [{ ingredient: '' }],
-        instructions: res.analyzedInstructions
-          ? res.analyzedInstructions[0].steps
-            ? res.analyzedInstructions[0].steps?.map(({ step }) => ({
-                instruction: step,
-              }))
-            : [{ instruction: '' }]
-          : [{ instruction: '' }],
-        image: {
-          URL: scrapedImg?.secure_url,
-          publicId: scrapedImg?.public_id,
-        },
-        URL: res.sourceUrl,
-      };
-
-      return NextResponse.json(data);
-    }
+    const data: {
+      title: string;
+      tags?: string[];
+      ingredients: { ingredient: string }[];
+      instructions: { instruction: string }[];
+      image: CreateResponsePictureData | null;
+      URL: string;
+    } = {
+      title: res.title,
+      ingredients: res.extendedIngredients?.map(({ original }) => ({
+        ingredient: original,
+      })) || [{ ingredient: '' }],
+      instructions: res.analyzedInstructions
+        ? res.analyzedInstructions[0].steps
+          ? res.analyzedInstructions[0].steps?.map(({ step }) => ({
+              instruction: step,
+            }))
+          : [{ instruction: '' }]
+        : [{ instruction: '' }],
+      image: scrapedImg
+        ? {
+            URL: scrapedImg?.secure_url,
+            publicId: scrapedImg?.public_id,
+          }
+        : null,
+      URL: res.sourceUrl,
+    };
+    return NextResponse.json(data);
   } catch (err) {
     return NextResponse.json(err);
   }
