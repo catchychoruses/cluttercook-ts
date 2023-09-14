@@ -12,9 +12,9 @@ export async function POST(req: Request) {
   try {
     const res = await uploadImage(image, {
       public_id: publicId,
+      overwrite: true,
     });
 
-    console.log(res);
     return NextResponse.json(res);
   } catch {
     return NextResponse.error;

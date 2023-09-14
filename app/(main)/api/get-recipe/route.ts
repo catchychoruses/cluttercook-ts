@@ -35,6 +35,11 @@ export async function GET(req: Request) {
       instructions: recipe.instructions.map((instruction) => ({
         instruction: instruction,
       })),
+      image: {
+        URL: recipe.picture?.url,
+        publicId: recipe.picture?.publicId,
+      },
+      URL: recipe.url,
     });
   } else {
     return NextResponse.error();

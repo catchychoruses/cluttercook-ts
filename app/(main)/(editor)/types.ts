@@ -8,30 +8,14 @@ export interface CreateRecipeRequest {
   description: string;
   ingredients: string[];
   instructions: string[];
-  picture: CreateResponsePictureData | null;
+  image: CreateResponsePictureData;
+  URL?: string;
 }
 
-export type CreateResponsePictureData =
-  | ScrapedPictureData
-  | UploadedPictureData
-  | DbPictureData;
-
-export interface DbPictureData {
-  origin: 'db';
+export type CreateResponsePictureData = {
+  URL: string;
   publicId: string;
-  url: string;
-}
-
-export interface ScrapedPictureData {
-  origin: 'scraped';
-  scrapedURL: string;
-  publicId: string;
-}
-
-interface UploadedPictureData {
-  origin: 'uploaded';
-  base64Picture: string | null;
-}
+};
 
 export interface ComposerProps {
   recipeId?: string | null;
@@ -42,9 +26,9 @@ export interface ComposerProps {
         description?: string;
         ingredients: { ingredient: string }[];
         instructions: { instruction: string }[];
-        picture: CreateResponsePictureData | null;
+        image: CreateResponsePictureData | null;
+        URL?: string;
       }
     | undefined;
-  isLoading: boolean;
   isEditMode?: boolean;
 }

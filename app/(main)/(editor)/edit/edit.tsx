@@ -4,7 +4,7 @@ import React from 'react';
 import { Composer } from '../composer';
 import useSWR, { Fetcher } from 'swr';
 import { useSearchParams } from 'next/navigation';
-import { DbPictureData } from '../types';
+import { CreateResponsePictureData } from '../types';
 
 const fetcher: Fetcher<
   {
@@ -14,7 +14,7 @@ const fetcher: Fetcher<
     description: string;
     ingredients: { ingredient: string }[];
     instructions: { instruction: string }[];
-    picture: DbPictureData;
+    image: CreateResponsePictureData;
   },
   string
 > = (url) => fetch(url).then((res) => res.json());
@@ -24,7 +24,7 @@ export default function Edit() {
 
   const recipeId = searchParams.get('recipeId');
 
-  const { data, isLoading, isValidating } = useSWR(
+  const { data, isValidating } = useSWR(
     `/api/get-recipe?recipeId=${recipeId}`,
     fetcher,
     {
@@ -34,17 +34,14 @@ export default function Edit() {
     }
   );
 
+  console.log(data);
+
   return isValidating ? (
     <p>wait...</p>
   ) : (
     <>
       <h1 className="text-3xl font-semibold">Edit Recipe</h1>
-      <Composer
-        initialFormData={data}
-        isLoading={isLoading}
-        isEditMode={true}
-        recipeId={recipeId}
-      />
+      <Composer initialFormData={data} isEditMode={true} recipeId={recipeId} />
     </>
   );
 }

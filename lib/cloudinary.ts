@@ -41,7 +41,7 @@ export async function uploadImage(
     (resolve, reject) => {
       cloudinary.v2.uploader.upload(
         image,
-        { width: 300, height: 300, crop: 'scale', ...options },
+        { width: 300, height: 300, crop: 'fill', ...options },
         (err, res) => {
           if (err) reject(err);
           resolve(res);

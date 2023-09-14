@@ -5,12 +5,12 @@ import { Actions } from './actions';
 export default async function Page({ params }: { params: { id: string } }) {
   const recipe: {
     title: string;
-    url?: string;
+    URL?: string;
     createdAt: Date;
     description: string;
     ingredients: { ingredient: string }[];
     instructions: { instruction: string }[];
-    picture: { url: string };
+    image: { URL: string };
   } = await fetch(
     `${process.env.BASE_URL}/api/get-recipe?recipeId=${params.id}`
   ).then((res) => res.json());
@@ -25,7 +25,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             <div className="flex h-fit min-w-[30%] max-sm:max-w-[75%] md:w-[25%]">
               <Image
                 className="m-4 mx-auto rounded"
-                src={recipe.picture.url}
+                src={recipe.image.URL}
                 width={400}
                 height={400}
                 alt="placeholder"
@@ -74,11 +74,11 @@ export default async function Page({ params }: { params: { id: string } }) {
                   ))}
                 </ul>
               </div>
-              {recipe.url && (
+              {recipe.URL && (
                 <div className="p-4">
                   <p className="text-sm opacity-50">Scraped from:</p>
                   <p className="line-clamp-1 max-h-6 pb-2 text-sm opacity-50">
-                    {recipe.url}
+                    {recipe.URL}
                   </p>
                 </div>
               )}

@@ -2,10 +2,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useFieldArray, useForm } from 'react-hook-form';
 import Image from 'next/image';
-import { ChangeEvent, useCallback, useRef, useState } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import placeholder from '../../../public/placeholder.jpg';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
@@ -13,12 +11,10 @@ import { X } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { AnimatePresence, motion } from 'framer-motion';
-import { SpinnerCircular } from 'spinners-react';
 import { ComposeRecipeRequest, ComposerProps } from './types';
-import { toBase64 } from '@/lib/utils';
-
-const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
-const MAX_FILE_SIZE = 1000000;
+import useImageUpload from '@/lib/hooks/useImageUpload';
+import { SpinnerCircular } from 'spinners-react';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Please provide a title' }),
@@ -38,25 +34,20 @@ const formSchema = z.object({
 
 export const Composer = ({
   initialFormData,
-  isLoading,
   isEditMode = false,
   recipeId,
 }: ComposerProps) => {
   const { toast } = useToast();
   const router = useRouter();
 
-  const hiddenFileInput = useRef<HTMLInputElement>(null);
-
-  const [previewPicture, setPreviewPicture] = useState(
-    initialFormData?.picture?.origin === 'scraped'
-      ? initialFormData?.picture?.scrapedURL
-      : null
-  );
-  const [isPictureScraped, setIsPictureScraped] = useState(
-    initialFormData?.picture?.origin === 'scraped'
-  );
-
-  const [fileUploadError, setFileUploadError] = useState<string | null>(null);
+  const [
+    image,
+    previewImage,
+    hiddenFileInputRef,
+    handleImageUpload,
+    fileUploadError,
+    isSubmissionDisabled,
+  ] = useImageUpload(initialFormData?.image);
 
   const {
     control,
@@ -67,6 +58,7 @@ export const Composer = ({
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialFormData || {
+      title: 'New Recipe',
       instructions: [{ instruction: '' }],
       ingredients: [{ ingredient: '' }],
     },
@@ -92,38 +84,14 @@ export const Composer = ({
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (hiddenFileInput.current) {
-      hiddenFileInput.current.click();
+    if (hiddenFileInputRef.current) {
+      hiddenFileInputRef.current.click();
     }
   };
-
-  const handleImageUpload = useCallback(
-    async (input: ChangeEvent<HTMLInputElement>) => {
-      if (input.currentTarget.files) {
-        const selectedFile = input.currentTarget.files[0];
-
-        if (ALLOWED_IMAGE_TYPES.includes(selectedFile.type)) {
-          if (selectedFile.size <= MAX_FILE_SIZE) {
-            const base64Picture = await toBase64(selectedFile);
-            setPreviewPicture(base64Picture as string);
-            setFileUploadError(null);
-            setIsPictureScraped(false);
-          } else {
-            setFileUploadError('Max file size is 1MB.');
-          }
-        } else {
-          setFileUploadError('Allowed image types: JPG, PNG, GIF');
-        }
-      }
-    },
-    []
-  );
 
   const onSubmit = async () => {
     const values = getValues();
     try {
-      console.log(initialFormData?.picture);
-
       const recipeRequestBody: ComposeRecipeRequest = {
         ...values,
         ingredients: values.ingredients.map(
@@ -133,14 +101,8 @@ export const Composer = ({
           (instruction) => instruction.instruction
         ),
         recipeId: recipeId,
-        picture:
-          initialFormData?.picture?.origin === 'scraped' && isPictureScraped
-            ? {
-                origin: 'scraped',
-                scrapedURL: initialFormData?.picture?.scrapedURL,
-                publicId: initialFormData?.picture?.publicId,
-              }
-            : { origin: 'uploaded', base64Picture: previewPicture },
+        image: image,
+        URL: initialFormData?.URL,
       };
 
       await fetch(isEditMode ? 'edit/api' : 'create/api', {
@@ -162,11 +124,9 @@ export const Composer = ({
     }
   };
 
-  return isLoading ? (
-    <div className="flex justify-center p-10 md:max-w-[30rem]">
-      <SpinnerCircular className="" color="white" size="12rem" />
-    </div>
-  ) : (
+  console.log(previewImage);
+
+  return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-y-1.5 p-6 md:max-w-[35rem] lg:flex-wrap"
@@ -180,7 +140,7 @@ export const Composer = ({
           {...register('title', { required: true, maxLength: 30 })}
         />
         {errors.title && (
-          <Label className="text-destructive decoration-destructive">
+          <Label className="p-2 text-destructive decoration-destructive">
             {errors.title.message}
           </Label>
         )}
@@ -334,27 +294,37 @@ export const Composer = ({
       <div className=" mx-auto flex w-full flex-col items-center p-4">
         <Image
           className="m-4 w-52 rounded border"
-          src={previewPicture || placeholder.src}
+          src={previewImage}
           width={200}
           height={200}
           alt="placeholder"
         />
         <Input
-          ref={hiddenFileInput}
+          ref={hiddenFileInputRef}
           onChange={handleImageUpload}
           className="hidden"
           type="file"
         />
-        <Button className="w-fit" type="button" onClick={handleClick}>
+        <Button className="mb-4 w-fit" type="button" onClick={handleClick}>
           Upload Image
         </Button>
+        <SpinnerCircular
+          className={cn({ 'opacity-0': !isSubmissionDisabled })}
+          color="white"
+          size="2rem"
+        />
         {fileUploadError && (
           <Label className="p-2 text-destructive decoration-destructive">
             {fileUploadError}
           </Label>
         )}
       </div>
-      <Button className="ml-auto  w-fit" type="submit">
+
+      <Button
+        className="ml-auto w-fit self-end"
+        type="submit"
+        disabled={isSubmissionDisabled}
+      >
         Save Recipe
       </Button>
     </form>

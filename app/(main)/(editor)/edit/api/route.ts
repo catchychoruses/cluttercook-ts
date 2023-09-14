@@ -1,66 +1,49 @@
 import { prisma } from '@/lib/prisma';
-import { UploadApiResponse } from 'cloudinary';
 import { NextRequest, NextResponse } from 'next/server';
+import { CreateResponsePictureData } from '../../types';
 
 type Recipe = {
-  recipeId: string | null;
+  recipeId: string;
   title: string;
   description: string;
   ingredients: string[];
   instructions: string[];
-  picture: {
-    base64Picture: string;
-    publicId: string;
-  };
+  image: CreateResponsePictureData;
 };
 
 export async function POST(req: NextRequest) {
-  const recipeNewData: Recipe = await req.json();
-
-  const imageRes: UploadApiResponse | undefined = await fetch(
-    `${process.env.BASE_URL}/api/upload-image`,
-    {
-      method: 'POST',
-      body: JSON.stringify({
-        base64Picture: recipeNewData.picture.base64Picture,
-        publicId: recipeNewData.picture.publicId,
-      }),
-      headers: { 'Content-type': 'application/json' },
-    }
-  ).then((data) => data.json());
+  const recipe: Recipe = await req.json();
 
   try {
-    if (imageRes && recipeNewData.recipeId) {
-      const update = await prisma.recipe.update({
-        where: {
-          id: recipeNewData.recipeId,
-        },
-        data: {
-          title: recipeNewData.title,
-          description: recipeNewData.description,
-          instructions: recipeNewData.instructions,
-          ingredients: recipeNewData.ingredients,
-          picture: {
-            update: {
-              data: {
-                url: imageRes.secure_url,
-                publicId: imageRes.public_id,
-              },
+    const update = await prisma.recipe.update({
+      where: {
+        id: recipe.recipeId,
+      },
+      data: {
+        title: recipe.title,
+        description: recipe.description,
+        instructions: recipe.instructions,
+        ingredients: recipe.ingredients,
+        picture: {
+          update: {
+            data: {
+              url: recipe.image.URL,
+              publicId: recipe.image.publicId,
             },
           },
         },
-      });
+      },
+    });
 
-      return NextResponse.json({
-        ...update,
-        ingredients: update.ingredients.map((ingredient) => ({
-          ingredient: ingredient,
-        })),
-        instructions: update.instructions.map((instruction) => ({
-          instruction: instruction,
-        })),
-      });
-    }
+    return NextResponse.json({
+      ...update,
+      ingredients: update.ingredients.map((ingredient) => ({
+        ingredient: ingredient,
+      })),
+      instructions: update.instructions.map((instruction) => ({
+        instruction: instruction,
+      })),
+    });
   } catch (err) {
     return NextResponse.error();
   }

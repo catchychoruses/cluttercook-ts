@@ -4,14 +4,15 @@ import React from 'react';
 import useSWR, { Fetcher } from 'swr';
 import { Composer } from '../composer';
 import { SpinnerCircular } from 'spinners-react';
-import { ScrapedPictureData } from '../types';
+import { CreateResponsePictureData } from '../types';
 
 const fetcher: Fetcher<
   {
     title: string;
     ingredients: { ingredient: string }[];
     instructions: { instruction: string }[];
-    picture: ScrapedPictureData;
+    image: CreateResponsePictureData;
+    URL: string;
   },
   string
 > = (url) => fetch(url).then((res) => res.json());
@@ -23,7 +24,7 @@ export default function Create({
   url: string | undefined;
   scrapeImage: boolean | undefined;
 }) {
-  const { data, isLoading, isValidating } = useSWR(
+  const { data, isValidating } = useSWR(
     url ? `scrape/api/?url=${url}&scrapeImage=${scrapeImage}` : null,
     fetcher,
     {
@@ -40,7 +41,7 @@ export default function Create({
   ) : (
     <>
       <h1 className="text-3xl font-semibold">New Recipe</h1>
-      <Composer initialFormData={data} isLoading={isLoading} />
+      <Composer initialFormData={data} />
     </>
   );
 }
