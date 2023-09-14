@@ -3,7 +3,7 @@ import { Wrapper } from '../wrapper';
 import Create from './create';
 
 type Params = {
-  searchParams: { url: string | undefined; scrapeImage: boolean | undefined };
+  searchParams: { url: string | undefined; scrapeImage: string | undefined };
 };
 
 export default function Page({ searchParams }: Params) {
