@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useCallback } from 'react';
-import { Input } from '../../../components/ui/input';
+import { Input } from '../ui/input';
 
 interface SearchInputProps {
   query: string | null;

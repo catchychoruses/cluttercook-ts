@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Button, buttonVariants } from '../../../components/ui/button';
+import { Button, buttonVariants } from '../ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -9,7 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../../components/ui/dropdown-menu';
+} from '../ui/dropdown-menu';
 import { KeyedMutator } from 'swr';
 import {
   AlertDialog,
@@ -18,9 +18,9 @@ import {
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-} from '../../../components/ui/alert-dialog';
+} from '../ui/alert-dialog';
 import { AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
-import { useToast } from '../../../components/ui/use-toast';
+import { useToast } from '../ui/use-toast';
 
 interface CardProps {
   title: string;

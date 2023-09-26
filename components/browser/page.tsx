@@ -1,8 +1,8 @@
 import { SORTING_TYPES } from '@/lib/types';
 import React from 'react';
 import useSWR, { Fetcher } from 'swr';
-import { Skeleton } from '../../../components/ui/skeleton';
-import { ScrollArea } from '../../../components/ui/scroll-area';
+import { Skeleton } from '../ui/skeleton';
+import { ScrollArea } from '../ui/scroll-area';
 import { AnimatePresence } from 'framer-motion';
 import { RecipeCard } from './recipe-card';
 

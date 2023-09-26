@@ -1,4 +1,4 @@
-import Browser from '@/app/(main)/(browser)/browser';
+import Browser from '@/components/(browser)/browser';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from './api/auth/[...nextauth]/route';
