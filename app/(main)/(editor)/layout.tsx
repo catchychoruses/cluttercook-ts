@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col items-center justify-center p-4">
       <PageWrapper>
         <RecipeMaker>
-          <div className="mt-10 w-[85vw] p-2">{children} </div>
+          <div className="mt-10 p-2">{children} </div>
         </RecipeMaker>
       </PageWrapper>
     </div>

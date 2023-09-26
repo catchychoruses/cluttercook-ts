@@ -9,7 +9,7 @@ const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 const MAX_FILE_SIZE = 1000000;
 
 export const placeholder = {
-  URL: 'https://res.cloudinary.com/ddfxnnmki/image/upload/v1691507606/Artboard_6_ncypek.jpg',
+  URL: 'https://res.cloudinary.com/ddfxnnmki/image/upload/v1691507606/placeholder.jpg',
   publicId: 'Placeholder',
 };
 

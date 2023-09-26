@@ -12,6 +12,16 @@ export interface CreateRecipeRequest {
   URL?: string;
 }
 
+export interface InitialFormData {
+  title: string;
+  tags?: string;
+  description?: string;
+  ingredients: Record<'ingredient', string>[];
+  instructions: Record<'instruction', string>[];
+  image: CreateResponsePictureData;
+  URL?: string;
+}
+
 export type CreateResponsePictureData = {
   URL: string;
   publicId: string;
@@ -19,16 +29,6 @@ export type CreateResponsePictureData = {
 
 export interface ComposerProps {
   recipeId?: string | null;
-  initialFormData:
-    | {
-        title: string;
-        tags?: string;
-        description?: string;
-        ingredients: { ingredient: string }[];
-        instructions: { instruction: string }[];
-        image: CreateResponsePictureData | null;
-        URL?: string;
-      }
-    | undefined;
+  initialFormData: InitialFormData | undefined;
   isEditMode?: boolean;
 }

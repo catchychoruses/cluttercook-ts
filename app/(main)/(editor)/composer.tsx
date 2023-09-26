@@ -115,6 +115,7 @@ export const Composer = ({
         description: 'Recipe saved!',
         duration: 1500,
       });
+
       router.push(`/`);
     } catch (err) {
       toast({
@@ -123,8 +124,6 @@ export const Composer = ({
       });
     }
   };
-
-  console.log(previewImage);
 
   return (
     <form

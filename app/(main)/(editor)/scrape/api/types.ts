@@ -1,3 +1,8 @@
+export enum SCRAPER_API_RESPONSE {
+  SCRAPED_API_BAD_RESPONSE = 'Scraper API returned a bad response : (',
+  SCRAPER_API_UNKNOWN = 'An unknown error has occured...',
+}
+
 export interface Recipe {
   vegetarian: boolean;
   vegan: boolean;

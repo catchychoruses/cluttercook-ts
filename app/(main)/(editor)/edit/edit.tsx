@@ -34,8 +34,6 @@ export default function Edit() {
     }
   );
 
-  console.log(data);
-
   return isValidating ? (
     <p>wait...</p>
   ) : (

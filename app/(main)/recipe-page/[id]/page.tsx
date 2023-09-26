@@ -22,10 +22,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     <div className="container flex flex-col items-center p-2 pt-16 md:p-8">
       <PageWrapper>
         <div className="mt-10 p-2">
-          <div className="flex flex-wrap justify-center rounded-md border p-4">
-            <div className="flex h-fit min-w-[30%] max-sm:max-w-[75%] md:w-[25%]">
+          <div className="flex flex-wrap rounded-md border p-4">
+            <div className=" flex h-fit min-w-[30%]  md:w-[25%]">
               <Image
-                className="m-4 mx-auto rounded"
+                className="m-4 mx-auto rounded max-sm:max-w-[75%]"
                 src={recipe.image.URL ?? placeholder.URL}
                 width={400}
                 height={400}
@@ -37,15 +37,12 @@ export default async function Page({ params }: { params: { id: string } }) {
               <h1 className="py-2 text-2xl font-bold md:max-w-[75%] md:text-4xl">
                 {recipe.title}
               </h1>
-              <>
-                <p className="line-clamp-1 max-h-6 pb-2 text-sm opacity-50">
-                  Created: {date}
-                </p>
-              </>
-            </div>
-
-            <div className="mr-auto p-4 md:py-2">
-              <p className="justify-start text-lg">{recipe.description}</p>
+              <p className="line-clamp-1 max-h-6 pb-2 text-sm opacity-50">
+                Created: {date}
+              </p>
+              <div className="mr-auto md:py-2">
+                <p className="justify-start text-lg">{recipe.description}</p>
+              </div>
             </div>
 
             <div className="m-4 flex flex-col justify-center pb-24">

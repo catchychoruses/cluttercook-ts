@@ -13,3 +13,9 @@ export enum SORTING_TYPES {
   DATE_DESC = 'datedesc',
   DATE_ASC = 'dateasc',
 }
+
+export interface RouteHandlerResponse<T> {
+  success: boolean;
+  message?: string;
+  data: T;
+}

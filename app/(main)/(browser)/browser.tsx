@@ -1,6 +1,6 @@
 'use client';
 
-import { SelectSort } from '../selectSort/select-sort';
+import { SelectSort } from '../../../components/selectSort/select-sort';
 import { useState } from 'react';
 import { Search } from './search';
 import useSWR, { Fetcher } from 'swr';

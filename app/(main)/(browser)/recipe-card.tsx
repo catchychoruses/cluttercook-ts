@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Button, buttonVariants } from '../ui/button';
+import { Button, buttonVariants } from '../../../components/ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -9,7 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
+} from '../../../components/ui/dropdown-menu';
 import { KeyedMutator } from 'swr';
 import {
   AlertDialog,
@@ -18,9 +18,9 @@ import {
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-} from '../ui/alert-dialog';
+} from '../../../components/ui/alert-dialog';
 import { AlertDialogTrigger } from '@radix-ui/react-alert-dialog';
-import { useToast } from '../ui/use-toast';
+import { useToast } from '../../../components/ui/use-toast';
 
 interface CardProps {
   title: string;
@@ -78,10 +78,11 @@ export const RecipeCard = ({
       <div className="relative flex min-w-[9rem] md:h-[12.375rem] md:min-w-[12.5rem]">
         <Image
           className="rounded-s-[5px] border-e object-cover"
-          src={picture}
+          src={picture.slice(0, 50) + 'w_300,c_scale/' + picture.slice(50)}
           fill
           alt="picture"
-          priority={index === 0}
+          priority={index <= 1}
+          sizes="300px"
         />
       </div>
 
