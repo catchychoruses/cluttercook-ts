@@ -65,7 +65,6 @@ export function deleteImage(publicId: string) {
 }
 export function getBlurredPlaceholder(publicId: string) {
   return cloudinary.v2.url(publicId, {
-    secure: true,
     transformation: [
       { width: 600, crop: 'scale' },
       { effect: 'blur:1000', quality: 1 },
