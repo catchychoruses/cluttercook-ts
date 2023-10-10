@@ -11,7 +11,7 @@ import { X } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ComposeRecipeRequest, ComposerProps } from './types';
+import { ComposeRecipeRequest, InitialFormData } from './types';
 import useImageUpload from '@/lib/hooks/useImageUpload';
 import { SpinnerCircular } from 'spinners-react';
 import { cn } from '@/lib/utils';
@@ -31,6 +31,12 @@ const formSchema = z.object({
     })
     .array(),
 });
+
+export interface ComposerProps {
+  recipeId?: string | null;
+  initialFormData: InitialFormData | undefined;
+  isEditMode?: boolean;
+}
 
 export const Composer = ({
   initialFormData,

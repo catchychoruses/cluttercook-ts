@@ -53,8 +53,8 @@ export async function uploadImage(
   return res;
 }
 
-export function deleteImage(publicId: string | null) {
-  const res = new Promise<cloudinary.UploadApiResponse>((resolve, reject) => {
+export function deleteImage(publicId: string) {
+  return new Promise<cloudinary.UploadApiResponse>((resolve, reject) => {
     if (publicId) {
       cloudinary.v2.uploader.destroy(publicId, (err, res) => {
         if (err) reject(err);
@@ -62,6 +62,14 @@ export function deleteImage(publicId: string | null) {
       });
     }
   });
-
-  return res;
+}
+export function getBlurredPlaceholder(publicId: string) {
+  return cloudinary.v2.url(publicId, {
+    secure: true,
+    transformation: [
+      { width: 600, crop: 'scale' },
+      { effect: 'blur:1000', quality: 1 },
+      {},
+    ],
+  });
 }

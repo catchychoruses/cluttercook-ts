@@ -1,10 +1,11 @@
-export type Recipe = {
-  id: string;
+export type RecipePageResponse = {
   title: string;
-  createdAt: Date;
+  createdAt: string;
   description: string;
-  ingredients: string;
-  instructions: string;
+  ingredients: Record<'ingredient', string>[];
+  instructions: Record<'instruction', string>[];
+  image: { URL: string; publicId: string };
+  URL?: string;
 };
 
 export enum SORTING_TYPES {

@@ -40,6 +40,10 @@ export async function GET(req: Request) {
         publicId: recipe.picture?.publicId,
       },
       URL: recipe.url,
+      createdAt: new Date(recipe.createdAt)
+        .toDateString()
+        .split(' ')
+        .join(', '),
     });
   } else {
     return NextResponse.error();

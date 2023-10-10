@@ -27,8 +27,3 @@ export type CreateResponsePictureData = {
   publicId: string;
 };
 
-export interface ComposerProps {
-  recipeId?: string | null;
-  initialFormData: InitialFormData | undefined;
-  isEditMode?: boolean;
-}

@@ -39,21 +39,17 @@ export default function Page({
   );
 
   function BrowserSkeleton() {
-    const SkeletonDiv = () => (
-      <div className="m-4 flex w-[95%] gap-8 rounded-md border">
-        <Skeleton className="h-44 w-52 rounded-md" />
-        <Skeleton className="w-[90%] rounded-md" />
+    const SkeletonDiv = Array.from({ length: 8 }).map((div, index) => (
+      <div
+        className="flex h-52 w-full justify-center gap-4 rounded-md px-4"
+        key={index}
+      >
+        <Skeleton className="w-[23%] rounded-md" />
+        <Skeleton className="w-[77%] rounded-md" />
       </div>
-    );
+    ));
 
-    return (
-      <>
-        <SkeletonDiv />
-        <SkeletonDiv />
-        <SkeletonDiv />
-        <SkeletonDiv />
-      </>
-    );
+    return <>{SkeletonDiv}</>;
   }
 
   return (

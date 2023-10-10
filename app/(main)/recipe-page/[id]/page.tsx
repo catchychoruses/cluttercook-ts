@@ -1,22 +1,15 @@
 import { PageWrapper } from '@/components/page-wrapper';
 import Image from 'next/image';
 import { Actions } from './actions';
-import { placeholder } from '@/lib/hooks/useImageUpload';
+import { RecipePageResponse } from '@/lib/types';
+import { getBlurredPlaceholder } from '@/lib/cloudinary';
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const recipe: {
-    title: string;
-    URL?: string;
-    createdAt: Date;
-    description: string;
-    ingredients: { ingredient: string }[];
-    instructions: { instruction: string }[];
-    image: { URL?: string };
-  } = await fetch(
+  const recipe: RecipePageResponse = await fetch(
     `${process.env.BASE_URL}/api/get-recipe?recipeId=${params.id}`
   ).then((res) => res.json());
 
-  const date = new Date(recipe.createdAt).toLocaleString();
+  const blurDataURL = getBlurredPlaceholder(recipe.image.publicId);
 
   return (
     <div className="container flex flex-col items-center p-2 pt-16 md:p-8">
@@ -25,11 +18,13 @@ export default async function Page({ params }: { params: { id: string } }) {
           <div className="flex flex-wrap rounded-md border p-4">
             <div className=" flex h-fit min-w-[30%]  md:w-[25%]">
               <Image
-                className="m-4 mx-auto rounded max-sm:max-w-[75%]"
-                src={recipe.image.URL ?? placeholder.URL}
+                className="mx-auto rounded p-4 max-sm:max-w-[75%]"
+                src={recipe.image.URL}
                 width={400}
                 height={400}
-                alt="placeholder"
+                alt="recipe image"
+                placeholder="blur"
+                blurDataURL={blurDataURL}
                 priority
               />
             </div>
@@ -38,7 +33,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 {recipe.title}
               </h1>
               <p className="line-clamp-1 max-h-6 pb-2 text-sm opacity-50">
-                Created: {date}
+                Created: {recipe.createdAt}
               </p>
               <div className="mr-auto md:py-2">
                 <p className="justify-start text-lg">{recipe.description}</p>

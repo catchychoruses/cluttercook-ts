@@ -77,6 +77,6 @@ model Picture {
   id          String @default(cuid()) @id
   recipe      Recipe @relation(fields: [recipeId], references: [id])
   recipeId    String @unique
-  publicId    String?
+  publicId    String
   url         String 
 }

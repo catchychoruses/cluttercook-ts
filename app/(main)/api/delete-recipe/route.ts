@@ -31,8 +31,8 @@ export async function DELETE(req: Request) {
 
   const transaction = await prisma.$transaction([deletePicture, deleteRecipe]);
 
-  if (recipe && transaction) {
-    await deleteImage(recipe?.picture?.publicId || null);
+  if (recipe?.picture && transaction) {
+    await deleteImage(recipe.picture?.publicId);
     return NextResponse.json(transaction);
   } else {
     return NextResponse.error();
