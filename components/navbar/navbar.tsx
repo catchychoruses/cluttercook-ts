@@ -17,7 +17,7 @@ export default function Navbar() {
   return (
     <nav
       className={clsx('flex gap-x-4 pt-10 max-md:hidden md:mx-12 lg:mx-16', {
-        ['hidden']: currentPath === '/auth/signin',
+        hidden: currentPath === '/auth/signin',
       })}
     >
       {[

@@ -1,33 +1,32 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") 
+  url      = env("POSTGRES_PRISMA_URL")
+  schemas  = ["cluttercook"]
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  refresh_token_expires_in Int? 
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                       String  @id @default(cuid())
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String?
+  refresh_token_expires_in Int?
+  access_token             String?
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String?
+  session_state            String?
+  user                     AppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId], name: "provider_providerAccountId")
+  @@schema("cluttercook")
 }
 
 model Session {
@@ -35,19 +34,23 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         AppUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@schema("cluttercook")
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String   @unique
-  emailVerified DateTime?
-  image         String?
-  hashedPassword  String?
-  accounts      Account[]
-  sessions      Session[]
+model AppUser {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+  accounts       Account[]
   recipes        Recipe[]
+  sessions       Session[]
+
+  @@schema("cluttercook")
 }
 
 model VerificationToken {
@@ -56,27 +59,32 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@schema("cluttercook")
 }
 
 model Recipe {
-  id           String   @id @default(cuid())
-  user         User     @relation(fields: [userID], references: [id])
+  id           String    @id @default(cuid())
   userID       String
   title        String
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
   lastEdited   DateTime?
   tags         String[]
   description  String
   ingredients  String[]
   instructions String[]
   url          String?
-  picture        Picture?
+  picture      Picture?
+  user         AppUser   @relation(fields: [userID], references: [id])
+
+  @@schema("cluttercook")
 }
 
 model Picture {
-  id          String @default(cuid()) @id
-  recipe      Recipe @relation(fields: [recipeId], references: [id])
-  recipeId    String @unique
-  publicId    String
-  url         String 
+  id       String @id @default(cuid())
+  recipeId String @unique
+  publicId String
+  url      String
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+
+  @@schema("cluttercook")
 }
