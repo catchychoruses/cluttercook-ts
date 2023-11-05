@@ -1,12 +1,10 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("POSTGRES_PRISMA_URL")
-  schemas  = ["cluttercook"]
 }
 
 model Account {
@@ -23,10 +21,9 @@ model Account {
   scope                    String?
   id_token                 String?
   session_state            String?
-  user                     AppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId], name: "provider_providerAccountId")
-  @@schema("cluttercook")
 }
 
 model Session {
@@ -34,12 +31,11 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         AppUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@schema("cluttercook")
 }
 
-model AppUser {
+model User {
   id             String    @id @default(cuid())
   name           String?
   email          String    @unique
@@ -50,7 +46,6 @@ model AppUser {
   recipes        Recipe[]
   sessions       Session[]
 
-  @@schema("cluttercook")
 }
 
 model VerificationToken {
@@ -59,7 +54,6 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-  @@schema("cluttercook")
 }
 
 model Recipe {
@@ -74,9 +68,8 @@ model Recipe {
   instructions String[]
   url          String?
   picture      Picture?
-  user         AppUser   @relation(fields: [userID], references: [id])
+  user         User      @relation(fields: [userID], references: [id])
 
-  @@schema("cluttercook")
 }
 
 model Picture {
@@ -86,5 +79,4 @@ model Picture {
   url      String
   recipe   Recipe @relation(fields: [recipeId], references: [id])
 
-  @@schema("cluttercook")
 }

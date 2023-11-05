@@ -1,6 +1,5 @@
 import { prisma } from '@/lib/prisma';
 import NextAuth, { NextAuthOptions } from 'next-auth';
-import { Adapter } from 'next-auth/adapters';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@auth/prisma-adapter';
@@ -9,7 +8,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/auth/signin',
   },
-  adapter: PrismaAdapter(prisma) as Adapter,
+  adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID,
@@ -36,7 +35,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await prisma.appUser.findUnique({
+        const user = await prisma.user.findUnique({
           where: {
             email: credentials.email,
           },

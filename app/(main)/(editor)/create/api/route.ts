@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
   try {
     if (session?.user?.email) {
-      await prisma.appUser.update({
+      await prisma.user.update({
         where: { email: session?.user?.email },
         data: {
           recipes: {
