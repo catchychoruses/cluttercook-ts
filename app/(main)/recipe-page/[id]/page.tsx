@@ -1,5 +1,5 @@
 import { PageWrapper } from '@/components/page-wrapper';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { Actions } from './actions';
 import { RecipePageResponse } from '@/lib/types';
 import { getBlurredPlaceholder } from '@/lib/cloudinary';

@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { Button, buttonVariants } from '../ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -73,16 +73,16 @@ export const RecipeCard = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className=" m-auto flex h-32 w-[95%] justify-between gap-y-8 rounded-[6px] border md:h-[12.5rem]"
+      className="m-auto flex h-32 w-[95%] justify-between gap-y-8 rounded-[6px] border md:h-[12.5rem]"
     >
       <div className="relative flex min-w-[9rem] md:h-[12.375rem] md:min-w-[12.5rem]">
         <Image
           className="rounded-s-[5px] border-e object-cover"
           src={picture.slice(0, 50) + 'w_300,c_scale/' + picture.slice(50)}
-          fill
+          width={300}
+          height={300}
           alt="picture"
           priority={index <= 1}
-          sizes="300px"
         />
       </div>
 
